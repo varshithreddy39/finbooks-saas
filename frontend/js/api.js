@@ -24,7 +24,7 @@ const api = {
         } catch (err) {
             console.error('Fetch error:', err);
             if (err.message === 'Failed to fetch') {
-                throw new Error('Could not connect to the server. Please check your connection.');
+                throw new Error('Server is waking up, please wait 30 seconds and try again.');
             }
             throw err;
         }
