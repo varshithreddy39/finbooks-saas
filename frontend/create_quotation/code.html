@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Create Quotation – Finbooks</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+  body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+  .font-headline { font-family: 'Manrope', sans-serif; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; transition: all 0.15s; text-decoration: none; }
+  .nav-item:hover { background: #f0fdfa; color: #0d6e6e; }
+  .nav-item.active { background: #0d6e6e; color: white; }
+  .nav-item .material-symbols-outlined { font-size: 18px; }
+  .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; }
+  .section-title { font-size: 12px; font-weight: 700; color: #0d6e6e; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid #e2e8f0; }
+  .form-label { display: block; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .form-input { width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 7px 12px; font-size: 13px; color: #1e293b; background: white; transition: all 0.15s; outline: none; }
+  .form-input:focus { border-color: #0d6e6e; box-shadow: 0 0 0 3px rgba(13,110,110,0.1); }
+  .form-input::placeholder { color: #cbd5e1; }
+  table.prod-table th { background: #f8fafc; padding: 8px 8px; font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid #e2e8f0; text-align: left; }
+  table.prod-table td { padding: 5px 5px; border-bottom: 1px solid #f1f5f9; font-size: 12px; vertical-align: middle; }
+  table.prod-table input, table.prod-table select { border: 1px solid #e2e8f0; border-radius: 6px; padding: 5px 7px; font-size: 12px; width: 100%; background: white; outline: none; }
+  table.prod-table input:focus, table.prod-table select:focus { border-color: #0d6e6e; }
+</style>
+</head>
+<body class="min-h-screen">
+<aside class="fixed left-0 top-0 h-screen w-56 bg-white border-r border-slate-200 flex flex-col z-40">
+  <div class="flex items-center gap-2.5 px-4 py-4 border-b border-slate-100">
+    <div class="w-8 h-8 bg-teal-800 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-white" style="font-size:17px">account_balance_wallet</span></div>
+    <div><div class="text-sm font-bold text-slate-800 font-headline leading-none">Finbooks</div><div class="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5">GST Billing</div></div>
+  </div>
+  <nav class="flex-1 p-3 space-y-0.5 overflow-y-auto">
+    <a href="../dashboard/code.html" class="nav-item"><span class="material-symbols-outlined">grid_view</span>Dashboard</a>
+    <a href="../invoice_list/code.html" class="nav-item"><span class="material-symbols-outlined">description</span>Invoices</a>
+    <a href="../quotations/code.html" class="nav-item active"><span class="material-symbols-outlined">request_quote</span>Quotations</a>
+    <a href="../credit_notes/code.html" class="nav-item"><span class="material-symbols-outlined">assignment_return</span>Credit Notes</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Master Data</div>
+    <a href="../clients/code.html" class="nav-item"><span class="material-symbols-outlined">groups</span>Clients</a>
+    <a href="../vendors/code.html" class="nav-item"><span class="material-symbols-outlined">group</span>Vendors</a>
+    <a href="../products/code.html" class="nav-item"><span class="material-symbols-outlined">inventory_2</span>Products</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">More</div>
+    <a href="../reports_settings/code.html" class="nav-item"><span class="material-symbols-outlined">bar_chart</span>Reports</a>
+    <a href="../company_setup/code.html" class="nav-item"><span class="material-symbols-outlined">settings</span>Settings</a>
+  </nav>
+  <div class="p-3 border-t border-slate-100">
+    <a href="../landing/code.html" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-slate-500 text-sm font-semibold hover:bg-red-50 hover:text-red-600 transition-colors">
+      <span class="material-symbols-outlined" style="font-size:17px">logout</span>Log Out
+    </a>
+  </div>
+</aside>
+<main class="ml-56 min-h-screen">
+  <div class="bg-white border-b border-slate-200 px-6 py-3.5 flex items-center justify-between sticky top-0 z-30">
+    <div class="flex items-center gap-3">
+      <a href="../quotations/code.html" class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined">arrow_back</span></a>
+      <div><h1 class="text-base font-bold text-slate-800 font-headline">New Quotation</h1><p class="text-xs text-slate-400 mt-0.5" id="auto-no-label">Auto No: #QUO-2025-0022</p></div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="saveAndConvertToInvoice()" class="border border-teal-700 text-teal-700 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-teal-50 flex items-center gap-1.5 transition-colors">
+        <span class="material-symbols-outlined" style="font-size:16px">swap_horiz</span>Convert to Invoice
+      </button>
+      <button onclick="saveQuotation()" id="save-btn" class="bg-teal-800 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-teal-900 transition-colors">Save Quotation</button>
+    </div>
+  </div>
+  <div class="p-6 space-y-5 max-w-5xl">
+    <!-- Header -->
+    <div class="card p-5">
+      <p class="section-title">Quotation Details</p>
+      <div class="grid grid-cols-4 gap-4">
+        <div><label class="form-label">Quotation Number</label><input class="form-input font-mono" id="quotation-no" type="text" placeholder="#QUO-2025-0001"/></div>
+        <div><label class="form-label">Date</label><input class="form-input" id="quotation-date" type="date"/></div>
+        <div><label class="form-label">Valid Until</label><input class="form-input" id="valid-until" type="date"/></div>
+        <div><label class="form-label">Place of Supply</label><select class="form-input" id="place-of-supply"></select></div>
+      </div>
+    </div>
+    <!-- Bill To / Ship To -->
+    <div class="grid grid-cols-2 gap-5">
+      <div class="card p-5">
+        <p class="section-title">Bill To</p>
+        <div class="space-y-3">
+          <div>
+              <label class="form-label">Customer Name</label>
+              <select id="customer-select" onchange="updateCustomer(this.value)" class="form-input">
+                <option value="">Select Customer...</option>
+              </select>
+              <input type="hidden" id="customer-name"/>
+          </div>
+          <div><label class="form-label">GSTIN</label><input class="form-input font-mono" id="bill-to-gstin" type="text" placeholder="27XXXXX0000X1Z0"/></div>
+          <div><label class="form-label">Address</label><textarea class="form-input" id="bill-to-address" rows="2" placeholder="Full billing address"></textarea></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="form-label">State</label><select class="form-input" id="bill-to-state" onchange="updateStateCode('bill-to')"></select></div>
+            <div><label class="form-label">State Code</label><input class="form-input" id="bill-to-state-code" type="text" placeholder="27"/></div>
+          </div>
+        </div>
+      </div>
+      <div class="card p-5">
+        <p class="section-title">Ship To <span class="text-slate-400 font-normal normal-case text-xs ml-2">(if different)</span>
+          <button type="button" onclick="copyBillToShip()" class="ml-auto float-right text-[10px] font-semibold text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200 px-2.5 py-1 rounded-lg flex items-center gap-1 transition-colors normal-case tracking-normal">
+            <span class="material-symbols-outlined" style="font-size:13px">content_copy</span>Same as Bill To
+          </button>
+        </p>
+        <div class="space-y-3">
+          <div><label class="form-label">Customer Name</label><input class="form-input" id="ship-to-name" type="text" placeholder="Same as Bill To"/></div>
+          <div><label class="form-label">GSTIN</label><input class="form-input font-mono" id="ship-to-gstin" type="text" placeholder="Auto-filled"/></div>
+          <div><label class="form-label">Address</label><textarea class="form-input" id="ship-to-address" rows="2" placeholder="Delivery address"></textarea></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="form-label">State</label><select class="form-input" id="ship-to-state" onchange="updateStateCode('ship-to')"></select></div>
+            <div><label class="form-label">State Code</label><input class="form-input" id="ship-to-state-code" type="text" placeholder="27"/></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Products -->
+    <div class="card p-5">
+      <p class="section-title">Products / Services</p>
+      <div class="overflow-x-auto">
+        <table class="prod-table w-full">
+          <thead>
+            <tr>
+              <th class="w-8">Sr</th><th>Description</th><th class="w-24">HSN/SAC</th><th class="w-16">Qty</th><th class="w-20">Unit</th><th class="w-24">Rate (₹)</th><th class="w-28">Taxable Val</th><th class="w-16">GST%</th><th class="w-28">Total (₹)</th><th class="w-8"></th>
+            </tr>
+          </thead>
+          <tbody id="prod-rows">
+          </tbody>
+        </table>
+      </div>
+      <button onclick="addRow()" class="mt-3 text-teal-700 text-xs font-semibold flex items-center gap-1 hover:underline border-none bg-none cursor-pointer">
+        <span class="material-symbols-outlined" style="font-size:15px">add_circle</span>Add Row
+      </button>
+    </div>
+    <!-- Totals -->
+    <div class="flex justify-end">
+      <div class="card p-5 w-80 space-y-2">
+        <div class="flex justify-between py-1.5 border-b border-slate-100 text-sm"><span class="text-slate-500">Taxable Amount</span><span class="font-semibold" id="taxable-total">₹0.00</span></div>
+        <div class="flex justify-between py-1.5 border-b border-slate-100 text-sm"><span class="text-slate-500">Total GST</span><span class="font-semibold" id="gst-total">₹0.00</span></div>
+        <div class="flex justify-between py-2 bg-teal-50 rounded-lg px-3 text-sm"><span class="font-bold text-teal-800">Grand Total</span><span class="font-bold text-teal-800" id="grand-total">₹0.00</span></div>
+      </div>
+    </div>
+    <!-- Terms -->
+    <div class="card p-5">
+      <p class="section-title">Terms & Signature</p>
+      <div class="grid grid-cols-2 gap-5">
+        <div><label class="form-label">Terms & Conditions</label><textarea class="form-input" id="terms" rows="4" placeholder="Payment terms, validity, delivery conditions..."></textarea></div>
+        <div>
+          <label class="form-label">Authorised Signatory</label>
+          <input type="file" id="signature-input" class="hidden" accept="image/*"/>
+          <div id="signature-preview-container" onclick="document.getElementById('signature-input').click()" class="border border-dashed border-slate-300 rounded-lg h-24 flex flex-col items-center justify-center text-slate-400 text-xs gap-1 cursor-pointer hover:border-teal-400 hover:bg-teal-50 transition-colors overflow-hidden">
+            <span class="material-symbols-outlined text-slate-300" style="font-size:24px">draw</span>Click to Upload Signature
+          </div>
+          <div id="sig-upload-status" class="text-[10px] mt-1 font-medium"></div>
+          <p class="text-xs text-slate-400 mt-2">Or type name below:</p>
+          <input class="form-input mt-1" type="text" id="auth-signatory" placeholder="Authorised signatory name"/>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-end gap-3 pb-8">
+      <a href="../quotations/code.html" class="border border-slate-200 text-slate-600 text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-slate-50 transition-colors">Cancel</a>
+      <button id="generate-pdf-btn" onclick="generatePDF()" class="flex items-center gap-1.5 border border-teal-700 text-teal-700 text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-teal-50 transition-colors">
+        <span class="material-symbols-outlined" style="font-size:16px">picture_as_pdf</span>Save & Print
+      </button>
+      <button onclick="saveQuotation()" class="bg-teal-800 text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-teal-900 transition-colors">Save Quotation</button>
+    </div>
+  </div>
+</main>
+<script src="../js/constants.js"></script>
+<script src="../js/api.js"></script>
+<script>
+let products = [];
+let customers = [];
+let companyProfile = null;
+const companyId = localStorage.getItem('company_id');
+let currentEditId = null; // tracks the ID being edited, set during init
+
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM Content Loaded for Quotation form.');
+    document.getElementById('quotation-date').valueAsDate = new Date();
+    if (!localStorage.getItem('token')) {
+        console.warn('No token, redirecting');
+        window.location = '../login_page/code.html';
+    }
+    if (!companyId) {
+        console.warn('No companyId, redirecting');
+        window.location = '../company_setup/code.html';
+    }
+    
+    console.log('Fetching masters for company:', companyId);
+    initStates();
+    await loadMasters();
+    await loadCompanyProfile();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    // Read from localStorage first (survives server URL rewriting), fallback to URL params
+    const editType = localStorage.getItem('edit_type');
+    let existingQuoId = null;
+    let isViewOnly = false;
+
+    if (editType === 'quotation') {
+        existingQuoId = localStorage.getItem('edit_id');
+        isViewOnly = localStorage.getItem('edit_mode') === 'view';
+        localStorage.removeItem('edit_type');
+        localStorage.removeItem('edit_id');
+        localStorage.removeItem('edit_mode');
+    } else {
+        existingQuoId = urlParams.get('id');
+        isViewOnly = urlParams.get('view') === 'true';
+    }
+
+    console.log('Quo ID:', existingQuoId, 'View Only:', isViewOnly);
+
+    if (existingQuoId && existingQuoId !== 'null' && existingQuoId !== 'undefined') {
+        currentEditId = existingQuoId; // store for save/convert functions
+        console.log('Initializing Edit Mode for Quotation:', existingQuoId);
+        document.querySelector('h1').textContent = isViewOnly ? 'View Quotation' : 'Edit Quotation';
+        if (document.getElementById('auto-no-label')) document.getElementById('auto-no-label').classList.add('hidden');
+        await loadExistingQuotation(existingQuoId);
+        if (isViewOnly) disableAllInputs();
+    } else {
+        console.log('Initializing Create Mode (New Quotation)');
+        addRow();
+    }
+});
+
+function disableAllInputs() {
+    document.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
+    document.querySelectorAll('button').forEach(btn => {
+        const txt = btn.textContent.toLowerCase();
+        if (txt.includes('save') || txt.includes('add') || txt.includes('cancel') || txt.includes('convert')) btn.classList.add('hidden');
+    });
+}
+
+function initStates() {
+  const states = PrecisionConstants.INDIAN_STATES;
+  const selectors = ['place-of-supply', 'bill-to-state', 'ship-to-state'];
+  selectors.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '<option value="">Select State...</option>' + states.map(s => `<option value="${s}">${s}</option>`).join('');
+  });
+}
+
+function updateStateCode(prefix) {
+  const state = document.getElementById(`${prefix}-state`).value;
+  document.getElementById(`${prefix}-state-code`).value = PrecisionConstants.STATE_CODES[state] || '';
+  calculateTotals();
+}
+
+async function loadCompanyProfile() {
+    try {
+        companyProfile = await PrecisionApi.company.getProfile(companyId);
+        if (companyProfile) {
+            document.getElementById('place-of-supply').value = companyProfile.state || '';
+            
+            const isEditMode = currentEditId;
+            if (companyProfile.invoice_settings && !isEditMode) {
+                const s = companyProfile.invoice_settings;
+                const next = (s.last_quo_used || 0) + 1;
+                document.getElementById('quotation-no').value = '#QUO-2025-' + next.toString().padStart(4, '0');
+            }
+            
+            if (companyProfile.signature_url) {
+                document.getElementById('signature-preview-container').innerHTML = `<img src="${companyProfile.signature_url}" class="h-full w-auto object-contain mx-auto"/>`;
+            }
+            // Pre-fill default terms on new quotation only
+            if (!currentEditId && companyProfile.invoice_settings?.default_terms) {
+                document.getElementById('terms').value = companyProfile.invoice_settings.default_terms;
+            }
+        }
+    } catch (err) { console.error('Error loading profile:', err); }
+}
+
+async function loadMasters() {
+    try {
+        const [p, c] = await Promise.all([
+            PrecisionApi.masters.getProducts(companyId),
+            PrecisionApi.masters.getCustomers(companyId)
+        ]);
+        products = p;
+        customers = c;
+        
+        const customerSelect = document.getElementById('customer-select');
+        customers.forEach(customer => {
+            const opt = document.createElement('option');
+            opt.value = customer.id;
+            opt.innerText = customer.name;
+            customerSelect.appendChild(opt);
+        });
+    } catch (err) { console.error('Error loading masters:', err); }
+}
+
+function updateCustomer(customerId) {
+    const customer = customers.find(c => c.id == customerId);
+    if (customer) {
+        document.getElementById('customer-name').value = customer.name;
+        document.getElementById('bill-to-state').value = customer.state || '';
+        document.getElementById('bill-to-state-code').value = PrecisionConstants.STATE_CODES[customer.state] || '';
+        document.getElementById('bill-to-gstin').value = customer.gstin || '';
+        document.getElementById('bill-to-address').value = customer.address || '';
+        calculateTotals();
+    }
+}
+
+function copyBillToShip() {
+    const sel = document.getElementById('customer-select');
+    document.getElementById('ship-to-name').value = document.getElementById('customer-name').value || (sel.options[sel.selectedIndex]?.text || '');
+    document.getElementById('ship-to-gstin').value = document.getElementById('bill-to-gstin').value;
+    document.getElementById('ship-to-address').value = document.getElementById('bill-to-address').value;
+    document.getElementById('ship-to-state').value = document.getElementById('bill-to-state').value;
+    document.getElementById('ship-to-state-code').value = document.getElementById('bill-to-state-code').value;
+}
+
+let rowCount = 0;
+function addRow() {
+    rowCount++;
+    const tbody = document.getElementById('prod-rows');
+    const tr = document.createElement('tr');
+    tr.className = 'quotation-row';
+    tr.id = `row-${rowCount}`;
+    tr.innerHTML = `
+        <td class="text-center text-slate-400 font-semibold text-xs sr-no">${rowCount}</td>
+        <td>
+            <select onchange="updateRowProduct(${rowCount}, this.value)" class="w-full text-xs">
+                <option value="">Select Product...</option>
+                ${products.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+            </select>
+            <input type="text" id="desc-${rowCount}" placeholder="Description (size, spec, chemicals...)" style="width:100%; font-size:11px; border:1px solid #e2e8f0; border-radius:4px; padding:3px 6px; margin-top:3px; color:#64748b; font-style:italic; outline:none;"/>
+        </td>
+        <td><input type="text" id="hsn-${rowCount}" placeholder="HSN/SAC"/></td>
+        <td><input type="number" id="qty-${rowCount}" value="1" oninput="calculateTotals()"/></td>
+        <td><select id="unit-${rowCount}"><option>KGS</option><option>PCS</option><option>NOS</option><option>TON</option><option>MTR</option></select></td>
+        <td><input type="number" id="rate-${rowCount}" value="0" step="0.01" oninput="calculateTotals()"/></td>
+        <td><input type="text" id="taxable-${rowCount}" class="bg-slate-50" readonly/></td>
+        <td>
+            <select id="gst-${rowCount}" onchange="calculateTotals()">
+                <option value="18">18%</option>
+                <option value="12">12%</option>
+                <option value="5">5%</option>
+                <option value="0">0%</option>
+            </select>
+        </td>
+        <td><input type="text" id="total-${rowCount}" class="bg-slate-50 font-semibold" readonly/></td>
+        <td class="text-center"><button onclick="removeRow(${rowCount})" class="text-red-400 hover:text-red-600"><span class="material-symbols-outlined" style="font-size:15px">close</span></button></td>
+    `;
+    tbody.appendChild(tr);
+    reIndexRows();
+}
+
+function removeRow(id) {
+    document.getElementById(`row-${id}`).remove();
+    reIndexRows();
+    calculateTotals();
+}
+
+function reIndexRows() {
+    const rows = document.querySelectorAll('.quotation-row');
+    rows.forEach((row, idx) => { row.querySelector('.sr-no').innerText = idx + 1; });
+}
+
+function updateRowProduct(rowId, productId) {
+    const product = products.find(p => p.id == productId);
+    if (product) {
+        const hsnEl = document.getElementById(`hsn-${rowId}`);
+        const unitEl = document.getElementById(`unit-${rowId}`);
+        const rateEl = document.getElementById(`rate-${rowId}`);
+        const gstEl = document.getElementById(`gst-${rowId}`);
+        
+        if (hsnEl) hsnEl.value = product.hsn_sac || '';
+        if (unitEl) unitEl.value = product.unit || 'PCS';
+        if (rateEl) rateEl.value = product.sales_price || 0;
+        if (gstEl) gstEl.value = product.default_gst_rate || 18;
+    } else {
+        console.warn('Product not found in masters list:', productId);
+    }
+    calculateTotals();
+}
+
+function calculateTotals() {
+    let subtotal = 0;
+    let gstTotal = 0;
+    const rows = document.querySelectorAll('.quotation-row');
+    rows.forEach(row => {
+        const id = row.id.split('-')[1];
+        const qty = parseFloat(document.getElementById(`qty-${id}`).value) || 0;
+        const rate = parseFloat(document.getElementById(`rate-${id}`).value) || 0;
+        const gstRate = parseFloat(document.getElementById(`gst-${id}`).value) || 0;
+        
+        const taxable = qty * rate;
+        const gstAmount = taxable * (gstRate/100);
+        const total = taxable + gstAmount;
+        
+        subtotal += taxable;
+        gstTotal += gstAmount;
+        
+        document.getElementById(`taxable-${id}`).value = '₹' + taxable.toFixed(2);
+        document.getElementById(`total-${id}`).value = '₹' + total.toFixed(2);
+    });
+    
+    document.getElementById('taxable-total').innerText = '₹' + subtotal.toFixed(2);
+    document.getElementById('gst-total').innerText = '₹' + gstTotal.toFixed(2);
+    document.getElementById('grand-total').innerText = '₹' + (subtotal + gstTotal).toFixed(2);
+}
+
+async function saveQuotation(redirectAfter = true) {
+    const btn = document.getElementById('save-btn');
+    btn.disabled = true;
+    btn.innerText = 'Saving...';
+    
+    try {
+        const rows = document.querySelectorAll('.quotation-row');
+        const items = Array.from(rows).map(row => {
+            const id = row.id.split('-')[1];
+            const descEl = document.getElementById(`desc-${id}`);
+            return {
+                product_id: row.querySelector('select').value,
+                qty: parseFloat(document.getElementById(`qty-${id}`).value),
+                rate: parseFloat(document.getElementById(`rate-${id}`).value),
+                gst_rate: parseFloat(document.getElementById(`gst-${id}`).value),
+                description: descEl ? descEl.value : ''
+            };
+        }).filter(item => item.product_id);
+
+        const data = {
+            customer_id: document.getElementById('customer-select').value,
+            quotation_no: document.getElementById('quotation-no').value,
+            date: document.getElementById('quotation-date').value,
+            valid_until: document.getElementById('valid-until').value || null,
+            bill_to_name: document.getElementById('customer-name').value,
+            bill_to_address: document.getElementById('bill-to-address').value,
+            bill_to_gstin: document.getElementById('bill-to-gstin').value,
+            bill_to_state: document.getElementById('bill-to-state').value,
+            bill_to_state_code: document.getElementById('bill-to-state-code').value,
+            ship_to_name: document.getElementById('ship-to-name').value,
+            ship_to_gstin: document.getElementById('ship-to-gstin').value,
+            ship_to_address: document.getElementById('ship-to-address').value,
+            ship_to_state: document.getElementById('ship-to-state').value,
+            ship_to_state_code: document.getElementById('ship-to-state-code').value,
+            terms_and_conditions: document.getElementById('terms').value,
+            authorised_signatory: document.getElementById('auth-signatory').value,
+            items: items
+        };
+
+        const existingId = currentEditId;
+        
+        let res;
+        if (existingId) {
+            res = await PrecisionApi.quotations.update(existingId, data, companyId);
+        } else {
+            res = await PrecisionApi.quotations.create(data, companyId);
+        }
+        
+        if (redirectAfter) {
+            window.location = '../quotations/code.html';
+        }
+        return res;
+    } catch (err) {
+        alert('Error: ' + err.message);
+        return null;
+    } finally {
+        btn.disabled = false;
+        btn.innerText = 'Save Quotation';
+    }
+}
+
+async function generatePDF() {
+    const saved = await saveQuotation(false);
+    if (!saved) return;
+    
+    const quoId = saved.id;
+    const url = PrecisionApi.quotations.getPdf(quoId, companyId);
+    
+    const btn = document.getElementById('generate-pdf-btn');
+    btn.disabled = true;
+    
+    try {
+        const response = await fetch(url, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = `Quotation_${document.getElementById('quotation-no').value}.pdf`;
+        a.click();
+    } catch (err) { alert('PDF Error: ' + err.message); }
+    finally { btn.disabled = false; }
+}
+
+async function saveAndConvertToInvoice() {
+    const rows = document.querySelectorAll('.quotation-row');
+    const items = Array.from(rows).map(row => {
+        const id = row.id.split('-')[1];
+        const descEl = document.getElementById(`desc-${id}`);
+        return {
+            product_id: row.querySelector('select').value,
+            qty: parseFloat(document.getElementById(`qty-${id}`).value),
+            rate: parseFloat(document.getElementById(`rate-${id}`).value),
+            gst_rate: parseFloat(document.getElementById(`gst-${id}`).value),
+            description: descEl ? descEl.value : ''
+        };
+    }).filter(item => item.product_id);
+
+    if (!items.length) { alert('Please add at least one product before converting.'); return; }
+    if (!document.getElementById('customer-select').value) { alert('Please select a customer before converting.'); return; }
+
+    const btn = document.querySelector('button[onclick="saveAndConvertToInvoice()"]');
+    btn.disabled = true;
+    btn.innerText = 'Converting...';
+
+    try {
+        const data = {
+            customer_id: document.getElementById('customer-select').value,
+            quotation_no: document.getElementById('quotation-no').value,
+            date: document.getElementById('quotation-date').value,
+            valid_until: document.getElementById('valid-until').value || null,
+            bill_to_name: document.getElementById('customer-name').value,
+            bill_to_address: document.getElementById('bill-to-address').value,
+            bill_to_gstin: document.getElementById('bill-to-gstin').value,
+            bill_to_state: document.getElementById('bill-to-state').value,
+            bill_to_state_code: document.getElementById('bill-to-state-code').value,
+            ship_to_name: document.getElementById('ship-to-name').value,
+            ship_to_gstin: document.getElementById('ship-to-gstin').value,
+            ship_to_address: document.getElementById('ship-to-address').value,
+            ship_to_state: document.getElementById('ship-to-state').value,
+            ship_to_state_code: document.getElementById('ship-to-state-code').value,
+            terms_and_conditions: document.getElementById('terms').value,
+            authorised_signatory: document.getElementById('auth-signatory').value,
+            items: items
+        };
+
+        const existingId = currentEditId;
+        let saved;
+        if (existingId) {
+            saved = await PrecisionApi.quotations.update(existingId, data, companyId);
+        } else {
+            saved = await PrecisionApi.quotations.create(data, companyId);
+        }
+
+        // Store context in localStorage so create_invoice can read it even if server strips query params
+        localStorage.setItem('edit_type', 'from_quotation');
+        localStorage.setItem('edit_id', saved.id);
+        localStorage.setItem('edit_mode', 'new');
+        window.location = '../create_invoice/code.html';
+    } catch (err) {
+        alert('Error: ' + err.message);
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">swap_horiz</span>Convert to Invoice';
+    }
+}
+async function loadExistingQuotation(id) {
+    console.log('Loading existing quotation data for ID:', id);
+    try {
+        const q = await PrecisionApi.quotations.get(id, companyId);
+        if (!q) {
+            console.error('No data returned for quotation:', id);
+            return;
+        }
+        console.log('Quotation data loaded:', q);
+
+        document.getElementById('quotation-no').value = q.quotation_no;
+        document.getElementById('quotation-date').value = q.date;
+        document.getElementById('valid-until').value = q.valid_until || '';
+        document.getElementById('place-of-supply').value = q.bill_to_state || '';
+        document.getElementById('customer-select').value = q.customer_id || '';
+        document.getElementById('customer-name').value = q.bill_to_name || '';
+        document.getElementById('bill-to-gstin').value = q.bill_to_gstin || '';
+        document.getElementById('bill-to-address').value = q.bill_to_address || '';
+        document.getElementById('bill-to-state').value = q.bill_to_state || '';
+        document.getElementById('bill-to-state-code').value = q.bill_to_state_code || '';
+        document.getElementById('ship-to-name').value = q.ship_to_name || '';
+        document.getElementById('ship-to-gstin').value = q.ship_to_gstin || '';
+        document.getElementById('ship-to-address').value = q.ship_to_address || '';
+        document.getElementById('ship-to-state').value = q.ship_to_state || '';
+        document.getElementById('ship-to-state-code').value = q.ship_to_state_code || '';
+        document.getElementById('terms').value = q.terms_and_conditions || '';
+        document.getElementById('auth-signatory').value = q.authorised_signatory || '';
+
+        // Clear default row and load items
+        document.getElementById('prod-rows').innerHTML = '';
+        rowCount = 0;
+        if (q.items && q.items.length > 0) {
+            console.log('Rendering items:', q.items.length);
+            for (const item of q.items) {
+                addRow();
+                const curId = rowCount;
+                const row = document.getElementById(`row-${curId}`);
+                if (row) {
+                    // Set gst_rate BEFORE updateRowProduct so it isn't overwritten
+                    document.getElementById(`gst-${curId}`).value = item.gst_rate;
+                    row.querySelector('select').value = item.product_id;
+                    updateRowProduct(curId, item.product_id);
+                    // Re-apply saved values after updateRowProduct (which sets product defaults)
+                    document.getElementById(`qty-${curId}`).value = item.qty;
+                    document.getElementById(`rate-${curId}`).value = item.rate;
+                    document.getElementById(`gst-${curId}`).value = item.gst_rate;
+                    const descEl = document.getElementById(`desc-${curId}`);
+                    if (descEl && item.description) descEl.value = item.description;
+                }
+            }
+        } else {
+            addRow();
+        }
+        calculateTotals();
+        console.log('Quotation population finished.');
+    } catch (err) {
+        console.error('Error loading quotation:', err);
+        alert('Failed to load quotation details. Please check console.');
+    }
+}
+</script>
+</body>
+</html>

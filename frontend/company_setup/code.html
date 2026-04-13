@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Company Settings – Finbooks</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<style>
+  body { font-family: 'Inter', sans-serif; background: #f1f5f9; }
+  .font-headline { font-family: 'Manrope', sans-serif; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; transition: all 0.18s; text-decoration: none; }
+  .nav-item:hover { background: #f0fdfa; color: #0d6e6e; }
+  .nav-item.active { background: #0d6e6e; color: white; }
+  .nav-item .material-symbols-outlined { font-size: 18px; }
+  .card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; transition: box-shadow 0.2s; }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+  .section-title { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 8px; }
+  .section-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .form-label { display: block; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
+  .form-input { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 9px 13px; font-size: 13px; color: #1e293b; background: white; transition: all 0.18s; outline: none; }
+  .form-input:focus { border-color: #0d6e6e; box-shadow: 0 0 0 3px rgba(13,110,110,0.08); }
+  .form-input::placeholder { color: #cbd5e1; }
+  .form-input:read-only { background: #f8fafc; color: #94a3b8; cursor: not-allowed; }
+  .pref-block { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; }
+  .pref-block-title { font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+  .toggle-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .toggle-label { font-size: 13px; font-weight: 500; color: #374151; }
+  .toggle-sub { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+  /* Custom toggle switch */
+  .switch { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; inset: 0; background: #e2e8f0; border-radius: 22px; transition: 0.2s; }
+  .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  input:checked + .slider { background: #0d6e6e; }
+  input:checked + .slider:before { transform: translateX(18px); }
+  /* Tab nav */
+  .tab-nav { display: flex; gap: 2px; background: #f1f5f9; border-radius: 12px; padding: 4px; }
+  .tab-btn { flex: 1; padding: 8px 12px; border-radius: 9px; font-size: 12px; font-weight: 600; color: #64748b; border: none; background: none; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap; }
+  .tab-btn .material-symbols-outlined { font-size: 15px; }
+  .tab-btn.active { background: white; color: #0d6e6e; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeUp 0.22s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  /* Cropper Modal */
+  #cropper-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+  .modal-content { background: white; padding: 24px; border-radius: 20px; width: 90%; max-width: 500px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
+  .cropper-container { width: 100%; height: 340px; background: #f8fafc; border-radius: 10px; overflow: hidden; margin: 16px 0; }
+  .preview-box { width: 120px; height: 120px; border-radius: 16px; border: 2px dashed #e2e8f0; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; transition: all 0.18s; flex-shrink: 0; }
+  .preview-box:hover { border-color: #0d6e6e; background: #f0fdfa; }
+  /* Settings sub-nav */
+  .settings-nav a { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 10px; font-size: 13px; font-weight: 500; color: #64748b; text-decoration: none; transition: all 0.18s; }
+  .settings-nav a:hover { background: #f0fdfa; color: #0d6e6e; }
+  .settings-nav a.active { background: #f0fdfa; color: #0d6e6e; font-weight: 600; border-left: 3px solid #0d6e6e; padding-left: 9px; }
+  .settings-nav .material-symbols-outlined { font-size: 17px; flex-shrink: 0; }
+</style>
+</head>
+<body class="min-h-screen">
+<aside class="fixed left-0 top-0 h-screen w-56 bg-white border-r border-slate-200 flex flex-col z-40">
+  <div class="flex items-center gap-2.5 px-4 py-4 border-b border-slate-100">
+    <div class="w-8 h-8 bg-teal-800 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-white" style="font-size:17px">account_balance_wallet</span></div>
+    <div><div class="text-sm font-bold text-slate-800 font-headline leading-none">Finbooks</div><div class="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5">GST Billing</div></div>
+  </div>
+  <nav class="flex-1 p-3 space-y-0.5 overflow-y-auto">
+    <a href="../dashboard/code.html" class="nav-item"><span class="material-symbols-outlined">grid_view</span>Dashboard</a>
+    <a href="../invoice_list/code.html" class="nav-item"><span class="material-symbols-outlined">description</span>Invoices</a>
+    <a href="../quotations/code.html" class="nav-item"><span class="material-symbols-outlined">request_quote</span>Quotations</a>
+    <a href="../credit_notes/code.html" class="nav-item"><span class="material-symbols-outlined">assignment_return</span>Credit Notes</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Master Data</div>
+    <a href="../clients/code.html" class="nav-item"><span class="material-symbols-outlined">groups</span>Clients</a>
+    <a href="../vendors/code.html" class="nav-item"><span class="material-symbols-outlined">group</span>Vendors</a>
+    <a href="../products/code.html" class="nav-item"><span class="material-symbols-outlined">inventory_2</span>Products</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">More</div>
+    <a href="../reports_settings/code.html" class="nav-item"><span class="material-symbols-outlined">bar_chart</span>Reports</a>
+    <a href="../company_setup/code.html" class="nav-item active"><span class="material-symbols-outlined">settings</span>Settings</a>
+  </nav>
+  <div class="p-3 border-t border-slate-100">
+    <a href="../landing/code.html" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-slate-500 text-sm font-semibold hover:bg-red-50 hover:text-red-600 transition-colors">
+      <span class="material-symbols-outlined" style="font-size:17px">logout</span>Log Out
+    </a>
+  </div>
+</aside>
+<main class="ml-56 min-h-screen">
+  <div class="bg-white border-b border-slate-200 px-6 py-3.5 sticky top-0 z-30">
+    <h1 class="text-base font-bold text-slate-800 font-headline">Company Settings</h1>
+    <p class="text-xs text-slate-400 mt-0.5">Manage your GST profile and business details</p>
+  </div>
+  <div class="p-6 flex gap-6">
+    <!-- Settings Sub-nav -->
+    <div class="w-48 flex-shrink-0">
+      <div class="sticky top-20">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">Sections</p>
+        <nav class="settings-nav space-y-0.5">
+          <a href="#company" onclick="setNavActive(this)" class="active"><span class="material-symbols-outlined">business</span>Company Info</a>
+          <a href="#gst" onclick="setNavActive(this)"><span class="material-symbols-outlined">receipt_long</span>GST Details</a>
+          <a href="#bank" onclick="setNavActive(this)"><span class="material-symbols-outlined">account_balance</span>Bank Details</a>
+          <a href="#invoice-pref" onclick="setNavActive(this)"><span class="material-symbols-outlined">tune</span>Invoice Prefs</a>
+          <a href="#logo" onclick="setNavActive(this)"><span class="material-symbols-outlined">image</span>Logo & Branding</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Settings Content -->
+    <div class="flex-1 space-y-5 max-w-2xl">
+
+      <!-- Company Info -->
+      <div class="card p-5" id="company">
+        <p class="section-title"><span class="section-icon bg-blue-50"><span class="material-symbols-outlined text-blue-600" style="font-size:16px">business</span></span>Company Information</p>
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="form-label">Company / Trade Name</label><input class="form-input" id="company_name" type="text" placeholder="Acme Traders"/></div>
+            <div><label class="form-label">Legal Name</label><input class="form-input" id="legal_name" type="text" placeholder="As per GST registration"/></div>
+          </div>
+          <div><label class="form-label">Registered Address</label><textarea class="form-input" id="address" rows="2" placeholder="Complete registered office address"></textarea></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="form-label">State</label><select class="form-input" id="state"><option value="">Select State</option></select></div>
+            <div><label class="form-label">State Code</label><input class="form-input" id="state_code" type="text" readonly placeholder="Auto-filled"/></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="form-label">Authorised Signatory</label><input class="form-input" id="authorised_signatory" type="text" placeholder="John Doe"/></div>
+            <div>
+              <label class="form-label">Primary Mobile <span class="text-slate-300 normal-case font-normal">(from signup)</span></label>
+              <input class="form-input bg-slate-50 text-slate-400 cursor-not-allowed" id="phone" type="tel" readonly/>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="form-label">Primary Email <span class="text-slate-300 normal-case font-normal">(from signup)</span></label>
+              <input class="form-input bg-slate-50 text-slate-400 cursor-not-allowed" id="primary_email" type="email" readonly/>
+            </div>
+            <div><label class="form-label">Secondary Email (Optional)</label><input class="form-input" id="secondary_email" type="email" placeholder="backup@company.com"/></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="form-label">Additional Phone</label><input class="form-input" id="additional_phone" type="tel" placeholder="+91 "/></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GST Details -->
+      <div class="card p-5" id="gst">
+        <p class="section-title"><span class="section-icon bg-orange-50"><span class="material-symbols-outlined text-orange-600" style="font-size:16px">receipt_long</span></span>GST Details</p>
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="form-label">GSTIN (Locked)</label>
+              <input class="form-input font-mono bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed" id="gstin" type="text" readonly/>
+            </div>
+            <div><label class="form-label">PAN Number</label><input class="form-input font-mono bg-slate-50 text-slate-400" id="pan" type="text" readonly/></div>
+          </div>
+          <!-- ... Rest of the card ... -->
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="form-label">GST Registration Type</label><select class="form-input" id="reg_type"><option>Regular</option><option>Composition</option><option>SEZ</option></select></div>
+            <div><label class="form-label">Default GST Rate</label><select class="form-input" id="default_rate"><option>18%</option><option>12%</option><option>28%</option><option>5%</option></select></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bank Details -->
+      <div class="card p-5" id="bank">
+        <p class="section-title"><span class="section-icon bg-purple-50"><span class="material-symbols-outlined text-purple-600" style="font-size:16px">account_balance</span></span>Bank Details <span class="text-slate-400 text-xs normal-case font-normal ml-1">(printed on invoices)</span></p>
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="form-label">Account Name</label><input class="form-input" id="bank_acc_name" type="text" placeholder="Account holder name"/></div>
+            <div><label class="form-label">Account Number</label><input class="form-input font-mono" id="bank_acc_no" type="text" placeholder="Account number"/></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="form-label">IFSC Code</label><input class="form-input font-mono" id="bank_ifsc" type="text" placeholder="IFSC code"/></div>
+            <div><label class="form-label">Bank Name</label><input class="form-input" id="bank_name" type="text" placeholder="Bank name"/></div>
+          </div>
+          <div><label class="form-label">Branch</label><input class="form-input" id="bank_branch" type="text" placeholder="Branch name"/></div>
+        </div>
+      </div>
+
+      <!-- Logo & Branding -->
+      <div class="card p-5" id="logo">
+        <p class="section-title"><span class="section-icon bg-pink-50"><span class="material-symbols-outlined text-pink-600" style="font-size:16px">image</span></span>Logo & Branding</p>
+        <div class="flex items-start gap-6">
+          <div class="preview-box" id="logo-preview-container" onclick="document.getElementById('logo-input').click()" title="Click to upload logo">
+            <span class="material-symbols-outlined text-slate-300" style="font-size:40px">add_photo_alternate</span>
+          </div>
+          <div class="flex-1 space-y-4">
+            <div>
+              <p class="text-sm font-bold text-slate-700">Company Logo</p>
+              <p class="text-xs text-slate-500 mt-1">Upload your company logo. This will appear on all your invoices and reports. Recommended size: 512x512px.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <input type="file" id="logo-input" class="hidden" accept="image/*"/>
+              <button onclick="document.getElementById('logo-input').click()" class="bg-teal-800 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-teal-900 transition-colors">Choose Logo</button>
+            </div>
+            <div id="upload-status" class="text-xs font-medium"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoice Preferences -->
+      <div class="card p-6" id="invoice-pref">
+        <p class="section-title">
+          <span class="section-icon bg-teal-50"><span class="material-symbols-outlined text-teal-700" style="font-size:16px">tune</span></span>
+          Invoice Preferences
+        </p>
+
+        <!-- Tab Nav -->
+        <div class="tab-nav mb-5">
+          <button class="tab-btn active" onclick="switchTab(this,'tab-numbering')">
+            <span class="material-symbols-outlined">tag</span>Numbering
+          </button>
+          <button class="tab-btn" onclick="switchTab(this,'tab-display')">
+            <span class="material-symbols-outlined">visibility</span>Display
+          </button>
+          <button class="tab-btn" onclick="switchTab(this,'tab-terms')">
+            <span class="material-symbols-outlined">description</span>Terms
+          </button>
+        </div>
+
+        <!-- Tab: Numbering -->
+        <div id="tab-numbering" class="tab-panel active space-y-5">
+          <div class="pref-block">
+            <p class="pref-block-title"><span class="material-symbols-outlined" style="font-size:14px">pin</span>Invoice Number Format</p>
+            <div class="grid grid-cols-3 gap-4">
+              <div>
+                <label class="form-label">Prefix</label>
+                <input class="form-input" id="num-prefix" type="text" placeholder="e.g. INV-" oninput="updateNumberPreview()"/>
+              </div>
+              <div>
+                <label class="form-label">Starting Number</label>
+                <input class="form-input" id="num-start" type="number" value="1" oninput="updateNumberPreview()"/>
+              </div>
+              <div>
+                <label class="form-label">Padding</label>
+                <select class="form-input" id="num-padding" onchange="updateNumberPreview()">
+                  <option value="4">4 digits — 0001</option>
+                  <option value="5">5 digits — 00001</option>
+                  <option value="0">No Padding</option>
+                </select>
+              </div>
+            </div>
+            <div class="mt-4 bg-white border border-teal-100 rounded-xl p-3.5 flex items-center justify-between">
+              <span class="text-xs text-slate-400 font-medium">Live Preview</span>
+              <span class="text-sm font-bold text-teal-700 font-mono tracking-wider" id="num-preview">INV-0001</span>
+            </div>
+          </div>
+
+          <div class="pref-block">
+            <p class="pref-block-title"><span class="material-symbols-outlined" style="font-size:14px">calendar_month</span>Financial Year</p>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="form-label">FY Start Date</label>
+                <input class="form-input" id="fy-start" type="date" value="2025-04-01"/>
+              </div>
+              <div>
+                <label class="form-label">FY End Date</label>
+                <input class="form-input" id="fy-end" type="date" value="2026-03-31"/>
+              </div>
+            </div>
+            <div class="toggle-row mt-3">
+              <div>
+                <p class="toggle-label">Reset numbering every financial year</p>
+                <p class="toggle-sub">Counter resets to 1 at the start of each FY</p>
+              </div>
+              <label class="switch"><input type="checkbox" id="reset-fy"/><span class="slider"></span></label>
+            </div>
+          </div>
+
+          <div class="pref-block">
+            <p class="pref-block-title"><span class="material-symbols-outlined" style="font-size:14px">sync_alt</span>Mid-Year Onboarding</p>
+            <label class="form-label">Last Invoice Number Already Used</label>
+            <input class="form-input" id="last-num-used" type="number" placeholder="0" style="max-width:180px"/>
+            <p class="text-xs text-slate-400 mt-2">System will continue from the next number. Set to 0 if starting fresh.</p>
+          </div>
+        </div>
+
+        <!-- Tab: Display -->
+        <div id="tab-display" class="tab-panel space-y-4">
+          <div class="pref-block">
+            <p class="pref-block-title"><span class="material-symbols-outlined" style="font-size:14px">receipt_long</span>What to show on invoices</p>
+            <div class="toggle-row">
+              <div><p class="toggle-label">Company Logo</p><p class="toggle-sub">Print your logo at the top of every invoice</p></div>
+              <label class="switch"><input type="checkbox" id="pref-logo" checked/><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><p class="toggle-label">Bank Details</p><p class="toggle-sub">Show account number and IFSC for payments</p></div>
+              <label class="switch"><input type="checkbox" id="pref-bank" checked/><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><p class="toggle-label">Transport Details</p><p class="toggle-sub">Vehicle number, mode, e-way bill section</p></div>
+              <label class="switch"><input type="checkbox" id="pref-transport" checked/><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><p class="toggle-label">Reverse Charge Toggle</p><p class="toggle-sub">Show reverse charge applicability field</p></div>
+              <label class="switch"><input type="checkbox" id="pref-reverse" checked/><span class="slider"></span></label>
+            </div>
+          </div>
+          <div class="pref-block">
+            <p class="pref-block-title"><span class="material-symbols-outlined" style="font-size:14px">decimal_increase</span>Amount Precision</p>
+            <label class="form-label">Decimal Places for Amounts</label>
+            <select class="form-input" id="decimal-precision" style="max-width:220px">
+              <option value="2">2 Digits — ₹1,234.00</option>
+              <option value="3">3 Digits — ₹1,234.000</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tab: Terms -->
+        <div id="tab-terms" class="tab-panel">
+          <div class="pref-block">
+            <p class="pref-block-title"><span class="material-symbols-outlined" style="font-size:14px">gavel</span>Default Terms & Conditions</p>
+            <p class="text-xs text-slate-500 mb-3">These terms are automatically printed on all invoices and quotations. You can override them per document.</p>
+            <textarea class="form-input" id="default-terms" rows="6" placeholder="1. Goods once sold will not be taken back.&#10;2. Interest @18% p.a. will be charged if payment is not made within due date.&#10;3. All disputes are subject to local jurisdiction."></textarea>
+            <p class="text-xs text-slate-400 mt-2">Leave blank to print no terms on documents.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Save Button -->
+      <div class="flex items-center justify-between pb-8">
+        <button id="delete-account-btn" type="button" class="text-red-500 hover:text-red-700 bg-white hover:bg-red-50 px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-1.5 transition-all border border-red-200 hover:border-red-300"><span class="material-symbols-outlined" style="font-size:17px">delete_forever</span>Delete Account</button>
+        <button id="save-btn" class="bg-teal-800 text-white text-sm font-semibold px-7 py-2.5 rounded-xl hover:bg-teal-900 transition-all flex items-center gap-2 shadow-sm hover:shadow-md">
+          <span class="material-symbols-outlined" style="font-size:16px">save</span>Save Settings
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+<!-- Success Toast -->
+<div id="success-toast" style="display:none" class="fixed top-6 right-6 z-50 bg-white border border-teal-200 shadow-2xl rounded-2xl p-5 flex items-start gap-4 w-80">
+  <div class="w-10 h-10 bg-teal-50 rounded-full flex items-center justify-center flex-shrink-0">
+    <span class="material-symbols-outlined text-teal-600" style="font-size:22px">check_circle</span>
+  </div>
+  <div class="flex-1">
+    <p class="text-sm font-bold text-slate-800">Changes Saved!</p>
+    <p class="text-xs text-slate-500 mt-0.5">Your settings have been updated successfully.</p>
+  </div>
+  <button onclick="document.getElementById('success-toast').style.display='none'" class="text-slate-300 hover:text-slate-500 flex-shrink-0">
+    <span class="material-symbols-outlined" style="font-size:18px">close</span>
+  </button>
+</div>
+
+<!-- Cropper Modal -->
+<div id="cropper-modal">
+  <div class="modal-content">
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="text-base font-bold text-slate-800">Crop Logo</h3>
+      <button onclick="closeCropper()" class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <p class="text-xs text-slate-500">Adjust your logo to fit perfectly on your invoices.</p>
+    <div class="cropper-container">
+      <img id="cropper-image" src="" style="max-width: 100%;"/>
+    </div>
+    <div class="flex justify-end gap-3 pt-2">
+      <button onclick="closeCropper()" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">Cancel</button>
+      <button onclick="applyCrop()" class="px-6 py-2 text-sm font-bold text-white bg-teal-800 hover:bg-teal-900 rounded-lg transition-colors">Apply & Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/constants.js"></script>
+<script src="../js/api.js"></script>
+<script>
+let companyId = localStorage.getItem('company_id');
+
+function showToast() {
+  const t = document.getElementById('success-toast');
+  t.style.display = 'flex';
+  setTimeout(() => { t.style.display = 'none'; }, 4000);
+}
+
+function initStates() {
+  const stateSelect = document.getElementById('state');
+  const currentVal = stateSelect.value;
+  stateSelect.innerHTML = '<option value="">Select State</option>' +
+    PrecisionConstants.INDIAN_STATES.map(s => `<option value="${s}">${s}</option>`).join('');
+  if (currentVal) stateSelect.value = currentVal;
+  stateSelect.addEventListener('change', (e) => {
+    document.getElementById('state_code').value = PrecisionConstants.STATE_CODES[e.target.value] || '';
+  });
+}
+
+function updateNumberPreview() {
+  const prefix = document.getElementById('num-prefix').value;
+  const start = document.getElementById('num-start').value || 1;
+  const padding = parseInt(document.getElementById('num-padding').value);
+  let formatted = start.toString();
+  if (padding > 0) formatted = formatted.padStart(padding, '0');
+  document.getElementById('num-preview').innerText = prefix + formatted;
+}
+
+function populateProfile(profile) {
+  document.getElementById('company_name').value = profile.company_name || '';
+  document.getElementById('gstin').value = profile.gstin || '';
+  document.getElementById('pan').value = profile.gstin ? profile.gstin.substring(2, 12) : '';
+  document.getElementById('address').value = profile.address || '';
+  document.getElementById('authorised_signatory').value = profile.authorised_signatory || '';
+  document.getElementById('phone').value = profile.phone || '';
+  document.getElementById('additional_phone').value = profile.additional_phone || '';
+  document.getElementById('primary_email').value = profile.primary_email || '';
+  document.getElementById('secondary_email').value = profile.secondary_email || '';
+
+  if (profile.state) {
+    document.getElementById('state').value = profile.state;
+    document.getElementById('state_code').value = PrecisionConstants.STATE_CODES[profile.state] || profile.state_code || '';
+  }
+
+  if (profile.logo_url) {
+    document.getElementById('logo-preview-container').innerHTML =
+      `<img src="${profile.logo_url}" class="w-full h-full object-contain"/>`;
+  }
+
+  if (profile.bank_details) {
+    const bd = profile.bank_details;
+    document.getElementById('bank_acc_name').value = bd.acc_name || '';
+    document.getElementById('bank_acc_no').value = bd.acc_no || '';
+    document.getElementById('bank_ifsc').value = bd.ifsc || '';
+    document.getElementById('bank_name').value = bd.bank || '';
+    document.getElementById('bank_branch').value = bd.branch || '';
+  }
+
+  if (profile.invoice_settings) {
+    const s = profile.invoice_settings;
+    if (s.numbering) {
+      document.getElementById('num-prefix').value = s.numbering.prefix || '';
+      document.getElementById('num-start').value = s.numbering.start_no || 1;
+      document.getElementById('num-padding').value = s.numbering.padding || 4;
+    }
+    if (s.financial_year) {
+      document.getElementById('fy-start').value = s.financial_year.start || '';
+      document.getElementById('fy-end').value = s.financial_year.end || '';
+      document.getElementById('reset-fy').checked = s.financial_year.reset || false;
+    }
+    document.getElementById('last-num-used').value = s.last_num_used || 0;
+    if (s.display) {
+      document.getElementById('pref-logo').checked = s.display.show_logo !== false;
+      document.getElementById('pref-bank').checked = s.display.show_bank !== false;
+      document.getElementById('pref-transport').checked = s.display.show_transport !== false;
+      document.getElementById('pref-reverse').checked = s.display.show_reverse !== false;
+      document.getElementById('decimal-precision').value = s.display.precision || 2;
+    }
+    updateNumberPreview();
+    document.getElementById('default-terms').value = s.default_terms || '';
+  }
+}
+
+async function saveSettings() {
+  const btn = document.getElementById('save-btn');
+  btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">hourglass_empty</span>Saving...';
+  btn.disabled = true;
+
+  try {
+    const companyData = {
+      company_name: document.getElementById('company_name').value,
+      gstin: document.getElementById('gstin').value,
+      primary_email: document.getElementById('primary_email').value,
+      phone: document.getElementById('phone').value,
+      address: document.getElementById('address').value,
+      state: document.getElementById('state').value,
+      state_code: document.getElementById('state_code').value,
+      authorised_signatory: document.getElementById('authorised_signatory').value,
+      additional_phone: document.getElementById('additional_phone').value,
+      secondary_email: document.getElementById('secondary_email').value,
+      bank_details: {
+        acc_name: document.getElementById('bank_acc_name').value,
+        acc_no: document.getElementById('bank_acc_no').value,
+        ifsc: document.getElementById('bank_ifsc').value,
+        bank: document.getElementById('bank_name').value,
+        branch: document.getElementById('bank_branch').value
+      },
+      invoice_settings: {
+        numbering: {
+          prefix: document.getElementById('num-prefix').value,
+          start_no: parseInt(document.getElementById('num-start').value) || 1,
+          padding: parseInt(document.getElementById('num-padding').value) || 4
+        },
+        financial_year: {
+          start: document.getElementById('fy-start').value,
+          end: document.getElementById('fy-end').value,
+          reset: document.getElementById('reset-fy').checked
+        },
+        last_num_used: parseInt(document.getElementById('last-num-used').value) || 0,
+        display: {
+          show_logo: document.getElementById('pref-logo').checked,
+          show_bank: document.getElementById('pref-bank').checked,
+          show_transport: document.getElementById('pref-transport').checked,
+          show_reverse: document.getElementById('pref-reverse').checked,
+          precision: parseInt(document.getElementById('decimal-precision').value) || 2
+        },
+        default_terms: document.getElementById('default-terms').value
+      }
+    };
+
+    const saved = await PrecisionApi.company.setup(companyData);
+    localStorage.setItem('company_id', saved.id);
+    companyId = saved.id;
+    showToast();
+  } catch (err) {
+    alert('Error saving settings: ' + err.message);
+  } finally {
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">save</span>Save Settings';
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('save-btn').addEventListener('click', saveSettings);
+
+// Logo Upload with Cropper
+let cropper = null;
+let croppedBlob = null;
+
+document.getElementById('logo-input').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const modal = document.getElementById('cropper-modal');
+    const image = document.getElementById('cropper-image');
+    image.src = event.target.result;
+    modal.style.display = 'flex';
+    if (cropper) cropper.destroy();
+    cropper = new Cropper(image, {
+      aspectRatio: 1, viewMode: 1, dragMode: 'move',
+      autoCropArea: 0.8, guides: true, center: true,
+      cropBoxMovable: true, cropBoxResizable: true
+    });
+  };
+  reader.readAsDataURL(file);
+});
+
+function closeCropper() {
+  document.getElementById('cropper-modal').style.display = 'none';
+  if (cropper) { cropper.destroy(); cropper = null; }
+  document.getElementById('logo-input').value = '';
+}
+
+async function applyCrop() {
+  if (!cropper) return;
+  const canvas = cropper.getCroppedCanvas({ width: 512, height: 512 });
+  canvas.toBlob(async (blob) => {
+    croppedBlob = blob;
+    document.getElementById('logo-preview-container').innerHTML =
+      `<img src="${canvas.toDataURL('image/png')}" class="w-full h-full object-contain"/>`;
+    closeCropper();
+    await uploadCroppedLogo();
+  }, 'image/png');
+}
+
+async function uploadCroppedLogo() {
+  if (!croppedBlob || !companyId) return;
+  const status = document.getElementById('upload-status');
+  status.innerText = 'Uploading...';
+  status.className = 'text-xs font-medium text-amber-600';
+  try {
+    await PrecisionApi.company.uploadLogo(companyId, croppedBlob);
+    status.innerText = 'Logo updated!';
+    status.className = 'text-xs font-medium text-teal-600';
+  } catch (err) {
+    status.innerText = 'Upload failed: ' + err.message;
+    status.className = 'text-xs font-medium text-red-600';
+  }
+}
+
+// Delete Account
+document.getElementById('delete-account-btn').addEventListener('click', async () => {
+  if (!confirm('DANGER: This will permanently delete your account, all invoices, and business data. Cannot be undone.')) return;
+  if (!confirm('Final confirmation: Are you absolutely sure?')) return;
+  const btn = document.getElementById('delete-account-btn');
+  btn.disabled = true;
+  btn.innerHTML = 'Deleting...';
+  try {
+    await PrecisionApi.auth.deleteAccount();
+    localStorage.clear();
+    window.location = '../login_page/code.html';
+  } catch (err) {
+    alert('Error: ' + err.message);
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">delete_forever</span> Delete Account & Data';
+  }
+});
+
+function setNavActive(el) {
+  document.querySelectorAll('.settings-nav a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function switchTab(btn, panelId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', async () => {
+  const token = localStorage.getItem('token');
+  if (!token) { window.location = '../login_page/code.html'; return; }
+
+  initStates();
+
+  if (!companyId) {
+    try {
+      const profile = await PrecisionApi.company.getMine();
+      companyId = profile.id;
+      localStorage.setItem('company_id', companyId);
+      populateProfile(profile);
+    } catch (e) {
+      console.log('No company profile yet.');
+    }
+    return;
+  }
+
+  try {
+    const profile = await PrecisionApi.company.getProfile(companyId);
+    populateProfile(profile);
+  } catch (e) {
+    try {
+      const profile = await PrecisionApi.company.getMine();
+      companyId = profile.id;
+      localStorage.setItem('company_id', companyId);
+      populateProfile(profile);
+    } catch (e2) {
+      console.log('No profile found yet.');
+    }
+  }
+});
+</script>
+</body>
+</html>

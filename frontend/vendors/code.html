@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vendors – Finbooks</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+  body{font-family:'Inter',sans-serif;background:#f8fafc;}
+  .font-headline{font-family:'Manrope',sans-serif;}
+  .nav-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;font-size:13px;font-weight:500;color:#64748b;transition:all 0.15s;text-decoration:none;}
+  .nav-item:hover{background:#f0fdfa;color:#0d6e6e;}
+  .nav-item.active{background:#0d6e6e;color:white;}
+  .nav-item .material-symbols-outlined{font-size:18px;}
+  .card{background:white;border:1px solid #e2e8f0;border-radius:12px;}
+  .form-label{display:block;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
+  .form-input{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:7px 12px;font-size:13px;color:#1e293b;background:white;transition:all 0.15s;outline:none;}
+  .form-input:focus{border-color:#0d6e6e;box-shadow:0 0 0 3px rgba(13,110,110,0.1);}
+  .form-input::placeholder{color:#cbd5e1;}
+</style>
+</head>
+<body class="min-h-screen">
+<aside class="fixed left-0 top-0 h-screen w-56 bg-white border-r border-slate-200 flex flex-col z-40">
+  <div class="flex items-center gap-2.5 px-4 py-4 border-b border-slate-100">
+    <div class="w-8 h-8 bg-teal-800 rounded-lg flex items-center justify-center flex-shrink-0">
+      <span class="material-symbols-outlined text-white" style="font-size:17px">account_balance_wallet</span>
+    </div>
+    <div>
+      <div class="text-sm font-bold text-slate-800 font-headline leading-none">Finbooks</div>
+      <div class="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5">GST Billing</div>
+    </div>
+  </div>
+  <nav class="flex-1 p-3 space-y-0.5 overflow-y-auto">
+    <a href="../dashboard/code.html" class="nav-item"><span class="material-symbols-outlined">grid_view</span>Dashboard</a>
+    <a href="../invoice_list/code.html" class="nav-item"><span class="material-symbols-outlined">receipt_long</span>Invoices</a>
+    <a href="../quotations/code.html" class="nav-item"><span class="material-symbols-outlined">request_quote</span>Quotations</a>
+    <a href="../credit_notes/code.html" class="nav-item"><span class="material-symbols-outlined">assignment_return</span>Credit Notes</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Master Data</div>
+    <a href="../clients/code.html" class="nav-item"><span class="material-symbols-outlined">groups</span>Clients</a>
+    <a href="../vendors/code.html" class="nav-item active"><span class="material-symbols-outlined">storefront</span>Vendors</a>
+    <a href="../products/code.html" class="nav-item"><span class="material-symbols-outlined">inventory_2</span>Products</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">More</div>
+    <a href="../reports_settings/code.html" class="nav-item"><span class="material-symbols-outlined">bar_chart</span>Reports</a>
+    <a href="../company_setup/code.html" class="nav-item"><span class="material-symbols-outlined">settings</span>Settings</a>
+  </nav>
+  <div class="p-3 border-t border-slate-100">
+    <a href="../landing/code.html" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-slate-500 text-sm font-semibold hover:bg-red-50 hover:text-red-600 transition-colors">
+      <span class="material-symbols-outlined" style="font-size:17px">logout</span>Log Out
+    </a>
+  </div>
+</aside>
+<div id="toast" style="display:none" class="fixed top-5 right-5 z-50 w-72 bg-white rounded-2xl shadow-2xl border p-4 flex items-start gap-3">
+  <div id="toast-icon" class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 bg-teal-500">
+    <span class="material-symbols-outlined text-white" style="font-size:18px" id="toast-sym">check</span>
+  </div>
+  <div class="flex-1">
+    <p class="text-sm font-bold text-slate-800" id="toast-title"></p>
+    <p class="text-xs text-slate-500 mt-0.5" id="toast-msg"></p>
+  </div>
+  <button onclick="document.getElementById('toast').style.display='none'" class="text-slate-300 hover:text-slate-500">
+    <span class="material-symbols-outlined" style="font-size:16px">close</span>
+  </button>
+</div>
+<main class="ml-56 min-h-screen">
+  <div class="bg-white border-b border-slate-200 px-6 py-3.5 flex items-center justify-between sticky top-0 z-30">
+    <div>
+      <h1 class="text-base font-bold text-slate-800 font-headline">Vendors</h1>
+      <p class="text-xs text-slate-400 mt-0.5" id="vendor-count">Loading...</p>
+    </div>
+    <button onclick="exportCSV()" class="bg-slate-100 text-slate-700 text-xs font-bold px-4 py-2 rounded-lg hover:bg-slate-200 transition-colors flex items-center gap-1.5">
+      <span class="material-symbols-outlined" style="font-size:16px">download</span>Export CSV
+    </button>
+  </div>
+  <div class="p-6">
+    <div class="grid grid-cols-3 gap-5">
+      <div class="col-span-2 card">
+        <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+          <p class="text-sm font-bold text-slate-700">Vendor Directory</p>
+          <input type="text" id="search-input" oninput="filterVendors()" placeholder="Search vendor..." class="text-sm border border-slate-200 rounded-lg px-3 py-1.5 w-44 focus:outline-none focus:ring-2 focus:ring-teal-700"/>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-100">
+                <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Vendor Name</th>
+                <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">GSTIN</th>
+                <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Phone</th>
+                <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">State</th>
+                <th class="px-4 py-3 text-center text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Action</th>
+              </tr>
+            </thead>
+            <tbody id="vendors-body">
+              <tr><td colspan="5" class="px-4 py-10 text-center text-slate-400">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card p-5">
+        <p class="text-sm font-bold text-slate-700 mb-4">Add New Vendor</p>
+        <form id="vendor-form" class="space-y-3" onsubmit="addVendor(event)">
+          <div><label class="form-label">Vendor Name *</label><input class="form-input" id="vname" type="text" placeholder="Company name" required/></div>
+          <div><label class="form-label">GSTIN</label><input class="form-input font-mono" id="vgstin" type="text" placeholder="27XXXXX0000X1Z0"/></div>
+          <div><label class="form-label">Phone</label><input class="form-input" id="vphone" type="tel" placeholder="+91 XXXXX XXXXX"/></div>
+          <div><label class="form-label">Email</label><input class="form-input" id="vemail" type="email" placeholder="vendor@email.com"/></div>
+          <div><label class="form-label">Address</label><textarea class="form-input" id="vaddress" rows="2" placeholder="Full address"></textarea></div>
+          <div class="grid grid-cols-2 gap-2">
+            <div><label class="form-label">State</label><select class="form-input" id="vstate" onchange="onStateChange()"></select></div>
+            <div><label class="form-label">State Code</label><input class="form-input" id="vstatecode" type="text" placeholder="27" readonly/></div>
+          </div>
+          <button type="submit" id="submit-btn" class="w-full bg-teal-800 text-white text-sm font-semibold py-2.5 rounded-lg hover:bg-teal-900 transition-colors flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined" style="font-size:16px">add_business</span>Add Vendor
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="../js/constants.js"></script>
+<script src="../js/api.js"></script>
+<script>
+var companyId = localStorage.getItem('company_id');
+var allVendors = [];
+
+function toast(type, title, msg) {
+  document.getElementById('toast-title').innerText = title;
+  document.getElementById('toast-msg').innerText = msg;
+  var icon = document.getElementById('toast-icon');
+  icon.className = 'w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ' + (type === 'success' ? 'bg-teal-500' : 'bg-red-500');
+  document.getElementById('toast-sym').innerText = type === 'success' ? 'check' : 'error';
+  document.getElementById('toast').style.display = 'flex';
+  clearTimeout(window._tt);
+  window._tt = setTimeout(function(){ document.getElementById('toast').style.display='none'; }, 3500);
+}
+
+function onStateChange() {
+  var s = document.getElementById('vstate').value;
+  document.getElementById('vstatecode').value = PrecisionConstants.STATE_CODES[s] || '';
+}
+
+function renderVendors(list) {
+  var body = document.getElementById('vendors-body');
+  if (!list.length) {
+    body.innerHTML = '<tr><td colspan="5" class="px-4 py-10 text-center text-slate-400 text-sm">No vendors yet. Add your first vendor.</td></tr>';
+    return;
+  }
+  body.innerHTML = list.map(function(v) {
+    return '<tr class="hover:bg-slate-50 transition-colors">' +
+      '<td class="px-4 py-3 font-semibold text-slate-700">' + v.name + '<div class="text-[10px] text-slate-400 font-normal">' + (v.email || '') + '</div></td>' +
+      '<td class="px-4 py-3 text-xs font-mono text-slate-400">' + (v.gstin || 'N/A') + '</td>' +
+      '<td class="px-4 py-3 text-slate-500">' + (v.phone || 'N/A') + '</td>' +
+      '<td class="px-4 py-3 text-slate-500">' + (v.state || 'N/A') + '</td>' +
+      '<td class="px-4 py-3 text-center"><button onclick="deleteVendor(\'' + v.id + '\',\'' + v.name.replace(/'/g,"\\'") + '\')" class="text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition-colors"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button></td>' +
+      '</tr>';
+  }).join('');
+}
+
+function filterVendors() {
+  var q = document.getElementById('search-input').value.toLowerCase();
+  renderVendors(allVendors.filter(function(v){ return v.name.toLowerCase().includes(q) || (v.gstin||'').toLowerCase().includes(q); }));
+}
+
+async function loadVendors() {
+  try {
+    allVendors = await PrecisionApi.masters.getVendors(companyId);
+    document.getElementById('vendor-count').innerText = allVendors.length + ' vendor' + (allVendors.length !== 1 ? 's' : '');
+    renderVendors(allVendors);
+  } catch(e) {
+    document.getElementById('vendor-count').innerText = 'Error loading';
+    console.error(e);
+  }
+}
+
+async function deleteVendor(id, name) {
+  if (!confirm('Delete "' + name + '"? This cannot be undone.')) return;
+  try {
+    await PrecisionApi.masters.deleteVendor(id, companyId);
+    toast('success', 'Deleted', '"' + name + '" removed.');
+    loadVendors();
+  } catch(e) { toast('error', 'Error', e.message); }
+}
+
+async function addVendor(e) {
+  e.preventDefault();
+  var btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">hourglass_empty</span>Adding...';
+  try {
+    var data = {
+      name: document.getElementById('vname').value,
+      gstin: document.getElementById('vgstin').value,
+      phone: document.getElementById('vphone').value,
+      email: document.getElementById('vemail').value,
+      address: document.getElementById('vaddress').value,
+      state: document.getElementById('vstate').value,
+      state_code: document.getElementById('vstatecode').value
+    };
+    var added = await PrecisionApi.masters.addVendor(data, companyId);
+    toast('success', 'Vendor Added!', '"' + added.name + '" added.');
+    document.getElementById('vendor-form').reset();
+    document.getElementById('vstatecode').value = '';
+    loadVendors();
+  } catch(e) { toast('error', 'Error', e.message); }
+  finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">add_business</span>Add Vendor';
+  }
+}
+
+function exportCSV() {
+  if (!allVendors.length) { toast('error', 'No Data', 'No vendors to export.'); return; }
+  var rows = allVendors.map(function(v){ return [v.name,v.gstin||'',v.phone||'',v.email||'',v.address||'',v.state||'',v.state_code||''].map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); });
+  var csv = 'Name,GSTIN,Phone,Email,Address,State,State Code\n' + rows.join('\n');
+  var a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'vendors.csv'; a.click();
+  toast('success', 'Exported!', allVendors.length + ' vendors downloaded.');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (!localStorage.getItem('token')) { window.location = '../login_page/code.html'; return; }
+  if (!companyId) { window.location = '../company_setup/code.html'; return; }
+  var sel = document.getElementById('vstate');
+  sel.innerHTML = '<option value="">Select State</option>' + PrecisionConstants.INDIAN_STATES.map(function(s){ return '<option value="'+s+'">'+s+'</option>'; }).join('');
+  loadVendors();
+});
+</script>
+</body>
+</html>

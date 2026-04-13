@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reports – Finbooks</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+  .font-headline { font-family: 'Manrope', sans-serif; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; transition: all 0.15s; text-decoration: none; }
+  .nav-item:hover { background: #f0fdfa; color: #0d6e6e; }
+  .nav-item.active { background: #0d6e6e; color: white; }
+  .nav-item .material-symbols-outlined { font-size: 18px; }
+  .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; }
+</style>
+</head>
+<body class="min-h-screen">
+<aside class="fixed left-0 top-0 h-screen w-56 bg-white border-r border-slate-200 flex flex-col z-40">
+  <div class="flex items-center gap-2.5 px-4 py-4 border-b border-slate-100">
+    <div class="w-8 h-8 bg-teal-800 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-white" style="font-size:17px">account_balance_wallet</span></div>
+    <div><div class="text-sm font-bold text-slate-800 font-headline leading-none">Finbooks</div><div class="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5">GST Billing</div></div>
+  </div>
+  <nav class="flex-1 p-3 space-y-0.5 overflow-y-auto">
+    <a href="../dashboard/code.html" class="nav-item"><span class="material-symbols-outlined">grid_view</span>Dashboard</a>
+    <a href="../invoice_list/code.html" class="nav-item"><span class="material-symbols-outlined">description</span>Invoices</a>
+    <a href="../quotations/code.html" class="nav-item"><span class="material-symbols-outlined">request_quote</span>Quotations</a>
+    <a href="../credit_notes/code.html" class="nav-item"><span class="material-symbols-outlined">assignment_return</span>Credit Notes</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Master Data</div>
+    <a href="../clients/code.html" class="nav-item"><span class="material-symbols-outlined">groups</span>Clients</a>
+    <a href="../vendors/code.html" class="nav-item"><span class="material-symbols-outlined">group</span>Vendors</a>
+    <a href="../products/code.html" class="nav-item"><span class="material-symbols-outlined">inventory_2</span>Products</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">More</div>
+    <a href="../reports_settings/code.html" class="nav-item active"><span class="material-symbols-outlined">bar_chart</span>Reports</a>
+    <a href="../company_setup/code.html" class="nav-item"><span class="material-symbols-outlined">settings</span>Settings</a>
+  </nav>
+  <div class="p-3 border-t border-slate-100">
+    <a href="../landing/code.html" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-slate-500 text-sm font-semibold hover:bg-red-50 hover:text-red-600 transition-colors">
+      <span class="material-symbols-outlined" style="font-size:17px">logout</span>Log Out
+    </a>
+  </div>
+</aside>
+
+<main class="ml-56 min-h-screen">
+  <!-- Top Bar -->
+  <div class="bg-white border-b border-slate-200 px-6 py-3.5 flex items-center justify-between sticky top-0 z-30">
+    <div>
+      <h1 class="text-base font-bold text-slate-800 font-headline">Reports & GST Filing</h1>
+      <p class="text-xs text-slate-400 mt-0.5" id="report-subtitle">Loading...</p>
+    </div>
+    <!-- Professional Filter Bar -->
+    <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+      <span class="material-symbols-outlined text-slate-400" style="font-size:16px">calendar_month</span>
+      <select id="filter-month" onchange="applyFilter()" class="text-sm bg-transparent text-slate-700 font-medium focus:outline-none cursor-pointer"></select>
+      <select id="filter-year" onchange="applyFilter()" class="text-sm bg-transparent text-slate-700 font-medium focus:outline-none cursor-pointer border-l border-slate-200 pl-2"></select>
+      <div class="w-px h-4 bg-slate-200 mx-1"></div>
+      <button onclick="exportGSTR1()" class="flex items-center gap-1 text-teal-700 text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-50 hover:bg-teal-100 transition-colors border border-teal-200">
+        <span class="material-symbols-outlined" style="font-size:14px">download</span>GSTR-1
+      </button>
+      <button onclick="exportAllInvoicesCSV()" class="flex items-center gap-1 text-slate-600 text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200">
+        <span class="material-symbols-outlined" style="font-size:14px">table_view</span>Export CSV
+      </button>
+    </div>
+  </div>
+
+  <div class="p-6 space-y-5">
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-4 gap-4">
+      <div class="card p-4">
+        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Total Invoices</p>
+        <p class="text-xl font-bold text-slate-800 font-headline" id="stat-count">—</p>
+        <p class="text-xs text-slate-400 mt-1" id="stat-period">Selected period</p>
+      </div>
+      <div class="card p-4">
+        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Taxable Value</p>
+        <p class="text-xl font-bold text-slate-800 font-headline" id="stat-taxable">₹0</p>
+        <p class="text-xs text-slate-400 mt-1">Before GST</p>
+      </div>
+      <div class="card p-4">
+        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Total GST Collected</p>
+        <p class="text-xl font-bold text-teal-700 font-headline" id="stat-gst">₹0</p>
+        <p class="text-xs text-slate-400 mt-1">CGST + SGST + IGST</p>
+      </div>
+      <div class="card p-4">
+        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Invoice Total</p>
+        <p class="text-xl font-bold text-slate-800 font-headline" id="stat-total">₹0</p>
+        <p class="text-xs text-slate-400 mt-1">Gross billed amount</p>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-3 gap-5">
+      <!-- Monthly Revenue Bar Chart -->
+      <div class="card p-5 col-span-2">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-sm font-bold text-slate-700">Monthly Revenue & GST</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Last 6 months trend</p>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-500">
+            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-teal-600 inline-block"></span>Revenue</span>
+            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-orange-400 inline-block"></span>GST</span>
+          </div>
+        </div>
+        <div style="height:200px"><canvas id="revenueChart"></canvas></div>
+      </div>
+      <!-- GST Doughnut -->
+      <div class="card p-5">
+        <h3 class="text-sm font-bold text-slate-700 mb-1">GST Breakdown</h3>
+        <p class="text-xs text-slate-400 mb-3">Selected period</p>
+        <div style="height:140px" class="flex items-center justify-center" id="gst-chart-container"><canvas id="gstChart"></canvas></div>
+        <div class="mt-3 space-y-2">
+          <div class="flex justify-between text-xs py-1.5 border-b border-slate-100"><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-teal-600 inline-block"></span>CGST</span><span class="font-semibold text-slate-700" id="bd-cgst">₹0</span></div>
+          <div class="flex justify-between text-xs py-1.5 border-b border-slate-100"><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-teal-400 inline-block"></span>SGST</span><span class="font-semibold text-slate-700" id="bd-sgst">₹0</span></div>
+          <div class="flex justify-between text-xs py-1.5 border-b border-slate-100"><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block"></span>IGST</span><span class="font-semibold text-slate-700" id="bd-igst">₹0</span></div>
+          <div class="flex justify-between text-xs pt-1"><span class="font-bold text-slate-700">Total GST</span><span class="font-bold text-teal-700" id="bd-total">₹0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Supply Type Split -->
+    <div class="card p-5">
+      <h3 class="text-sm font-bold text-slate-700 mb-4">Supply Type Split</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead><tr class="bg-slate-50 border-b border-slate-100">
+            <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-400 uppercase">Supply Type</th>
+            <th class="px-4 py-2 text-right text-[11px] font-semibold text-slate-400 uppercase">Invoices</th>
+            <th class="px-4 py-2 text-right text-[11px] font-semibold text-slate-400 uppercase">Taxable Value</th>
+            <th class="px-4 py-2 text-right text-[11px] font-semibold text-slate-400 uppercase">GST</th>
+            <th class="px-4 py-2 text-right text-[11px] font-semibold text-slate-400 uppercase">Total</th>
+          </tr></thead>
+          <tbody id="supply-split-body" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Invoice Detail Table (GSTR-1 ready) -->
+    <div class="card">
+      <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <h3 class="text-sm font-bold text-slate-700">Invoice Register</h3>
+          <p class="text-xs text-slate-400 mt-0.5">GSTR-1 ready — B2B outward supplies</p>
+        </div>
+        <span class="text-xs text-slate-400" id="invoice-register-count"></span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead><tr class="bg-slate-50 border-b border-slate-100">
+            <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Invoice No.</th>
+            <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Date</th>
+            <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Customer</th>
+            <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">GSTIN</th>
+            <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Supply</th>
+            <th class="px-4 py-3 text-right text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Taxable</th>
+            <th class="px-4 py-3 text-right text-[11px] font-semibold text-slate-400 uppercase tracking-wider">CGST</th>
+            <th class="px-4 py-3 text-right text-[11px] font-semibold text-slate-400 uppercase tracking-wider">SGST</th>
+            <th class="px-4 py-3 text-right text-[11px] font-semibold text-slate-400 uppercase tracking-wider">IGST</th>
+            <th class="px-4 py-3 text-right text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Total</th>
+          </tr></thead>
+          <tbody id="invoice-register-body" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="../js/api.js"></script>
+<script>
+const companyId = localStorage.getItem('company_id');
+let allInvoices = [];
+let filteredInvoices = [];
+let companyProfile = null;
+
+const MONTHS = ['All Months','January','February','March','April','May','June','July','August','September','October','November','December'];
+
+// Round to 2 decimal places to avoid floating point drift
+function r2(n) { return Math.round((n || 0) * 100) / 100; }
+function fmt(n) { return '₹' + r2(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+// Derive CGST/SGST/IGST from stored invoice data
+// The backend stores total_gst and supply_type — we split accordingly
+function getGSTSplit(inv) {
+  const totalGst = r2(parseFloat(inv.total_gst) || 0);
+  const isIntra = inv.supply_type === 'Intra-state';
+  return {
+    cgst: isIntra ? r2(totalGst / 2) : 0,
+    sgst: isIntra ? r2(totalGst / 2) : 0,
+    igst: isIntra ? 0 : totalGst,
+    total: totalGst
+  };
+}
+
+// Derive effective GST rate from taxable value and total gst
+function getEffectiveGSTRate(taxable, totalGst) {
+  if (!taxable || taxable === 0) return 0;
+  return r2((totalGst / taxable) * 100);
+}
+
+function initFilters(invoices) {
+  const now = new Date();
+  const mSel = document.getElementById('filter-month');
+  mSel.innerHTML = MONTHS.map((m, i) => `<option value="${i}">${m}</option>`).join('');
+  mSel.value = now.getMonth() + 1;
+
+  // Derive years from actual invoice dates, fallback to current year only
+  const years = new Set(invoices.map(inv => new Date(inv.date).getFullYear()));
+  years.add(now.getFullYear());
+  const sortedYears = Array.from(years).sort((a, b) => b - a);
+
+  const ySel = document.getElementById('filter-year');
+  ySel.innerHTML = sortedYears.map(y => `<option value="${y}">${y}</option>`).join('');
+  ySel.value = now.getFullYear();
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!localStorage.getItem('token')) { window.location = '../login_page/code.html'; return; }
+  if (!companyId) { window.location = '../company_setup/code.html'; return; }
+  initFilters([]);
+  try {
+    [allInvoices, companyProfile] = await Promise.all([
+      PrecisionApi.invoices.list(companyId),
+      PrecisionApi.company.getProfile(companyId)
+    ]);
+    initFilters(allInvoices);
+    applyFilter();
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+function applyFilter() {
+  const month = parseInt(document.getElementById('filter-month').value);
+  const year = parseInt(document.getElementById('filter-year').value);
+
+  filteredInvoices = allInvoices.filter(inv => {
+    const d = new Date(inv.date);
+    const matchYear = d.getFullYear() === year;
+    const matchMonth = month === 0 || (d.getMonth() + 1) === month;
+    return matchYear && matchMonth;
+  });
+
+  const mLabel = MONTHS[month];
+  document.getElementById('report-subtitle').innerText =
+    `${mLabel === 'All Months' ? 'All months' : mLabel} ${year} — ${filteredInvoices.length} invoice${filteredInvoices.length !== 1 ? 's' : ''}`;
+  document.getElementById('stat-period').innerText = `${mLabel} ${year}`;
+
+  renderStats();
+  renderSupplySplit();
+  renderInvoiceRegister();
+  renderCharts();
+}
+
+function renderStats() {
+  const count = filteredInvoices.length;
+  const taxable = r2(filteredInvoices.reduce((s, i) => s + (parseFloat(i.taxable_value) || 0), 0));
+  const gst    = r2(filteredInvoices.reduce((s, i) => s + (parseFloat(i.total_gst) || 0), 0));
+  const total  = r2(filteredInvoices.reduce((s, i) => s + (parseFloat(i.total_amount) || 0), 0));
+
+  document.getElementById('stat-count').innerText = count;
+  document.getElementById('stat-taxable').innerText = fmt(taxable);
+  document.getElementById('stat-gst').innerText = fmt(gst);
+  document.getElementById('stat-total').innerText = fmt(total);
+
+  // Verify: taxable + gst should equal total (within rounding)
+  let cgst = 0, sgst = 0, igst = 0;
+  filteredInvoices.forEach(inv => {
+    const s = getGSTSplit(inv);
+    cgst += s.cgst; sgst += s.sgst; igst += s.igst;
+  });
+  cgst = r2(cgst); sgst = r2(sgst); igst = r2(igst);
+
+  document.getElementById('bd-cgst').innerText = fmt(cgst);
+  document.getElementById('bd-sgst').innerText = fmt(sgst);
+  document.getElementById('bd-igst').innerText = fmt(igst);
+  document.getElementById('bd-total').innerText = fmt(r2(cgst + sgst + igst));
+}
+
+let revenueChartInst = null;
+let gstChartInst = null;
+
+function renderCharts() {
+  const year = parseInt(document.getElementById('filter-year').value);
+
+  // Build last 6 months data from allInvoices
+  const now = new Date();
+  const labels = [];
+  const revenueData = [];
+  const gstData = [];
+
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const m = d.getMonth() + 1;
+    const y = d.getFullYear();
+    labels.push(d.toLocaleString('en-IN', { month: 'short', year: '2-digit' }));
+    const monthInvs = allInvoices.filter(inv => {
+      const id = new Date(inv.date);
+      return id.getFullYear() === y && (id.getMonth() + 1) === m;
+    });
+    revenueData.push(monthInvs.reduce((s, i) => s + (parseFloat(i.taxable_value) || 0), 0));
+    gstData.push(monthInvs.reduce((s, i) => s + (parseFloat(i.total_gst) || 0), 0));
+  }
+
+  // Bar chart
+  const rCtx = document.getElementById('revenueChart').getContext('2d');
+  if (revenueChartInst) revenueChartInst.destroy();
+  revenueChartInst = new Chart(rCtx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Revenue', data: revenueData, backgroundColor: '#0d9488', borderRadius: 6, barPercentage: 0.6 },
+        { label: 'GST', data: gstData, backgroundColor: '#fb923c', borderRadius: 6, barPercentage: 0.6 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#94a3b8' } },
+        y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 11 }, color: '#94a3b8', callback: v => '₹' + (v >= 100000 ? (v/100000).toFixed(1)+'L' : v >= 1000 ? (v/1000).toFixed(0)+'K' : v) } }
+      }
+    }
+  });
+
+  // Doughnut chart — use getGSTSplit for accuracy
+  let cgst = 0, sgst = 0, igst = 0;
+  filteredInvoices.forEach(inv => {
+    const s = getGSTSplit(inv);
+    cgst += s.cgst; sgst += s.sgst; igst += s.igst;
+  });
+  cgst = r2(cgst); sgst = r2(sgst); igst = r2(igst);
+  const gCtx = document.getElementById('gstChart').getContext('2d');
+  if (gstChartInst) { gstChartInst.destroy(); gstChartInst = null; }
+  const gstTotal = cgst + sgst + igst;
+
+  if (gstTotal === 0) {
+    document.getElementById('gst-chart-container').innerHTML = '<div class="flex flex-col items-center justify-center h-full text-slate-300"><span class="material-symbols-outlined" style="font-size:36px">donut_large</span><p class="text-xs mt-1">No GST data</p></div>';
+    return;
+  }
+
+  // Rebuild canvas if it was replaced by empty state
+  const gstContainer = document.getElementById('gst-chart-container');
+  if (!document.getElementById('gstChart')) {
+    gstContainer.innerHTML = '<canvas id="gstChart"></canvas>';
+  }
+
+  gstChartInst = new Chart(document.getElementById('gstChart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['CGST', 'SGST', 'IGST'],
+      datasets: [{ data: [cgst, sgst, igst], backgroundColor: ['#0d9488','#5eead4','#3b82f6'], borderWidth: 0, hoverOffset: 4 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '70%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ' ₹' + ctx.raw.toLocaleString('en-IN') } }
+      }
+    }
+  });
+}
+
+function renderSupplySplit() {
+  const intra = filteredInvoices.filter(i => i.supply_type === 'Intra-state');
+  const inter = filteredInvoices.filter(i => i.supply_type !== 'Intra-state');
+
+  function row(label, list) {
+    const taxable = list.reduce((s, i) => s + (parseFloat(i.taxable_value) || 0), 0);
+    const gst = list.reduce((s, i) => s + (parseFloat(i.total_gst) || 0), 0);
+    const total = list.reduce((s, i) => s + (parseFloat(i.total_amount) || 0), 0);
+    return `<tr class="hover:bg-slate-50">
+      <td class="px-4 py-3 font-medium text-slate-700">${label}</td>
+      <td class="px-4 py-3 text-right text-slate-600">${list.length}</td>
+      <td class="px-4 py-3 text-right text-slate-600">${fmt(taxable)}</td>
+      <td class="px-4 py-3 text-right font-semibold text-teal-700">${fmt(gst)}</td>
+      <td class="px-4 py-3 text-right font-semibold text-slate-800">${fmt(total)}</td>
+    </tr>`;
+  }
+
+  document.getElementById('supply-split-body').innerHTML =
+    row('Intra-state (CGST + SGST)', intra) +
+    row('Inter-state (IGST)', inter);
+}
+
+function renderInvoiceRegister() {
+  const body = document.getElementById('invoice-register-body');
+  document.getElementById('invoice-register-count').innerText = filteredInvoices.length + ' invoices';
+
+  if (!filteredInvoices.length) {
+    body.innerHTML = '<tr><td colspan="10" class="px-4 py-10 text-center text-slate-400 text-sm">No invoices found for this period.</td></tr>';
+    return;
+  }
+
+  body.innerHTML = filteredInvoices.map(inv => {
+    const { cgst, sgst, igst } = getGSTSplit(inv);
+    const isIntra = inv.supply_type === 'Intra-state';
+    const taxable = r2(parseFloat(inv.taxable_value) || 0);
+    const total   = r2(parseFloat(inv.total_amount) || 0);
+    return `<tr class="hover:bg-slate-50 transition-colors">
+      <td class="px-4 py-3 font-semibold text-teal-700">${inv.invoice_no || ''}</td>
+      <td class="px-4 py-3 text-slate-500">${new Date(inv.date).toLocaleDateString('en-IN')}</td>
+      <td class="px-4 py-3 font-medium text-slate-700">${inv.customers?.name || inv.bill_to_name || '—'}</td>
+      <td class="px-4 py-3 text-xs font-mono text-slate-400">${inv.bill_to_gstin || 'Unregistered'}</td>
+      <td class="px-4 py-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${isIntra ? 'bg-teal-50 text-teal-700' : 'bg-blue-50 text-blue-700'}">${inv.supply_type || '—'}</span></td>
+      <td class="px-4 py-3 text-right text-slate-600">${fmt(taxable)}</td>
+      <td class="px-4 py-3 text-right text-slate-600">${cgst > 0 ? fmt(cgst) : '—'}</td>
+      <td class="px-4 py-3 text-right text-slate-600">${sgst > 0 ? fmt(sgst) : '—'}</td>
+      <td class="px-4 py-3 text-right text-slate-600">${igst > 0 ? fmt(igst) : '—'}</td>
+      <td class="px-4 py-3 text-right font-semibold text-slate-800">${fmt(total)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// GSTR-1 format CSV export — GSTN compliant
+function exportGSTR1() {
+  if (!filteredInvoices.length) { alert('No invoices in selected period.'); return; }
+
+  const supplierGSTIN = companyProfile?.gstin || '';
+
+  // GSTR-1 B2B columns as per GST portal format
+  const headers = [
+    'GSTIN of Supplier',
+    'Invoice Number',
+    'Invoice Date (DD-MMM-YY)',
+    'Invoice Value',
+    'Place of Supply (State Code)',
+    'Reverse Charge (Y/N)',
+    'Invoice Type (B2B/B2C)',
+    'GSTIN/UIN of Recipient',
+    'Receiver Name',
+    'Taxable Value',
+    'Applicable % of Tax Rate',
+    'CGST Amount',
+    'SGST/UTGST Amount',
+    'IGST Amount',
+    'Cess Amount'
+  ];
+
+  const rows = filteredInvoices.map(inv => {
+    const taxable = r2(parseFloat(inv.taxable_value) || 0);
+    const { cgst, sgst, igst } = getGSTSplit(inv);
+    const isIntra = inv.supply_type === 'Intra-state';
+    const effectiveRate = getEffectiveGSTRate(taxable, parseFloat(inv.total_gst) || 0);
+
+    // Format date as DD-MMM-YY (GSTR-1 portal format)
+    const d = new Date(inv.date);
+    const gstrDate = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: '2-digit' }).replace(/ /g, '-');
+
+    const isB2B = !!(inv.bill_to_gstin && inv.bill_to_gstin.trim().length === 15);
+    const reverseCharge = (inv.reverse_charge === true || inv.reverse_charge === 'true' || inv.reverse_charge === 'Y') ? 'Y' : 'N';
+
+    return [
+      `"${supplierGSTIN}"`,
+      `"${inv.invoice_no || ''}"`,
+      `"${gstrDate}"`,
+      r2(parseFloat(inv.total_amount) || 0).toFixed(2),
+      `"${inv.bill_to_state_code || inv.bill_to_state || ''}"`,
+      reverseCharge,
+      isB2B ? '"B2B"' : '"B2CL"',
+      `"${isB2B ? (inv.bill_to_gstin || '') : ''}"`,
+      `"${(inv.customers?.name || inv.bill_to_name || '').replace(/"/g, '""')}"`,
+      taxable.toFixed(2),
+      effectiveRate.toFixed(2),
+      cgst.toFixed(2),
+      sgst.toFixed(2),
+      igst.toFixed(2),
+      '0.00'  // Cess — not applicable unless configured
+    ].join(',');
+  });
+
+  const month = MONTHS[parseInt(document.getElementById('filter-month').value)];
+  const year = document.getElementById('filter-year').value;
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }); // BOM for Excel
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `GSTR1_${month}_${year}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Full invoice list CSV
+function exportAllInvoicesCSV() {
+  if (!filteredInvoices.length) { alert('No invoices in selected period.'); return; }
+
+  const headers = ['Invoice No', 'Date', 'Customer Name', 'Customer GSTIN', 'Supply Type',
+    'Taxable Value', 'CGST', 'SGST', 'IGST', 'Total GST', 'Invoice Total', 'Reverse Charge'];
+
+  const rows = filteredInvoices.map(inv => {
+    const { cgst, sgst, igst, total: gstTotal } = getGSTSplit(inv);
+    return [
+      `"${inv.invoice_no || ''}"`,
+      `"${new Date(inv.date).toLocaleDateString('en-IN')}"`,
+      `"${(inv.customers?.name || inv.bill_to_name || '').replace(/"/g, '""')}"`,
+      `"${inv.bill_to_gstin || ''}"`,
+      `"${inv.supply_type || ''}"`,
+      r2(parseFloat(inv.taxable_value) || 0).toFixed(2),
+      cgst.toFixed(2),
+      sgst.toFixed(2),
+      igst.toFixed(2),
+      gstTotal.toFixed(2),
+      r2(parseFloat(inv.total_amount) || 0).toFixed(2),
+      (inv.reverse_charge === true || inv.reverse_charge === 'true') ? 'Y' : 'N'
+    ].join(',');
+  });
+
+  const month = MONTHS[parseInt(document.getElementById('filter-month').value)];
+  const year = document.getElementById('filter-year').value;
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Invoices_${month}_${year}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Finbooks – GST Billing Made Simple for Indian Businesses</title>
+<meta name="description" content="Create GST-compliant invoices, track CGST/SGST/IGST, manage quotations and credit notes – all in one clean platform built for Indian businesses."/><script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+  :root { --teal: #0d6e6e; --teal-dark: #0a5a5a; --teal-light: #e0f7f7; }
+  body { font-family: 'Inter', sans-serif; background: #fff; color: #1e293b; }
+  .font-headline { font-family: 'Manrope', sans-serif; }
+  .btn-primary { background: var(--teal); color: white; padding: 12px 28px; border-radius: 10px; font-weight: 700; font-size: 15px; display: inline-block; text-decoration: none; transition: all 0.2s; }
+  .btn-primary:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(13,110,110,0.25); }
+  .btn-outline { border: 2px solid var(--teal); color: var(--teal); padding: 11px 26px; border-radius: 10px; font-weight: 700; font-size: 15px; display: inline-block; text-decoration: none; transition: all 0.2s; }
+  .btn-outline:hover { background: var(--teal-light); }
+  .feature-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; transition: all 0.2s; }
+  .feature-card:hover { border-color: var(--teal); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(13,110,110,0.1); }
+  .section-tag { display: inline-block; background: var(--teal-light); color: var(--teal); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.06em; }
+  nav { position: sticky; top: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid #f1f5f9; z-index: 50; }
+  .hero-bg { background: linear-gradient(135deg, #f0fdfa 0%, #fff 60%); }
+  .check-icon { color: var(--teal); font-size: 18px; }
+  .mockup-bar { width: 12px; border-radius: 3px; background: #0d6e6e; }
+  .mockup-bar-light { background: #b2dfdf; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .float-anim { animation: float 4s ease-in-out infinite; }
+  .step-num { width: 36px; height: 36px; border-radius: 50%; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between">
+    <a href="./code.html" class="flex items-center gap-2.5">
+      <div class="w-8 h-8 bg-teal-800 rounded-lg flex items-center justify-center">
+        <span class="material-symbols-outlined text-white" style="font-size:17px">account_balance_wallet</span>
+      </div>
+      <span class="font-headline text-slate-800 font-bold text-lg">Finbooks</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-500">
+      <a href="#features" class="hover:text-teal-700 transition-colors">Features</a>
+      <a href="#how-it-works" class="hover:text-teal-700 transition-colors">How it Works</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="../login_page/code.html" class="text-sm font-semibold text-slate-600 hover:text-teal-700 transition-colors">Log In</a>
+      <a href="../signup_page/code.html" class="btn-primary text-sm py-2 px-5">Get Started Free</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-bg pt-20 pb-24 px-6">
+  <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+    <!-- Left -->
+    <div class="flex-1 text-center lg:text-left">
+      <span class="section-tag mb-5">Indian GST Billing Platform</span>
+      <h1 class="font-headline text-5xl lg:text-6xl font-black text-slate-900 leading-tight mt-4">
+        GST Billing<br/>
+        <span style="color:var(--teal)">Made Simple.</span><br/>
+        Built for India.
+      </h1>
+      <p class="text-slate-500 text-lg mt-6 max-w-lg leading-relaxed">
+        Create tax invoices, quotations & credit notes in seconds. Auto-calculate CGST, SGST & IGST. Built for Indian SMEs and accountants.
+      </p>
+      <div class="flex flex-wrap gap-4 mt-8 justify-center lg:justify-start">
+        <a href="../signup_page/code.html" class="btn-primary">Start for Free →</a>
+      </div>
+      <div class="flex flex-wrap gap-5 mt-8 justify-center lg:justify-start">
+        <div class="flex items-center gap-1.5 text-slate-500 text-sm"><span class="material-symbols-outlined check-icon" style="font-size:18px">check_circle</span>GST-compliant invoices</div>
+        <div class="flex items-center gap-1.5 text-slate-500 text-sm"><span class="material-symbols-outlined check-icon" style="font-size:18px">check_circle</span>CGST / SGST / IGST auto-calc</div>
+        <div class="flex items-center gap-1.5 text-slate-500 text-sm"><span class="material-symbols-outlined check-icon" style="font-size:18px">check_circle</span>HSN code database</div>
+      </div>
+    </div>
+    <!-- Right — Dashboard Mockup -->
+    <div class="flex-1 w-full max-w-lg float-anim">
+      <div class="bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden">
+        <!-- Mock top bar -->
+        <div class="bg-slate-800 px-4 py-2.5 flex items-center gap-2">
+          <div class="w-3 h-3 rounded-full bg-red-400"></div>
+          <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+          <div class="w-3 h-3 rounded-full bg-green-400"></div>
+          <div class="flex-1 bg-slate-700 rounded-md h-5 mx-4 flex items-center px-3">
+            <span class="text-slate-400 text-[10px]">finbooks.in/dashboard</span>
+          </div>
+        </div>
+        <!-- Mock content -->
+        <div class="flex">
+          <!-- Sidebar strip -->
+          <div class="w-28 bg-slate-50 border-r border-slate-100 p-3 space-y-1.5">
+            <div class="h-6 bg-teal-800 rounded-md flex items-center px-2 gap-1">
+              <div class="w-2 h-2 bg-white rounded-sm opacity-80"></div>
+              <div class="flex-1 h-1.5 bg-white rounded opacity-80"></div>
+            </div>
+            <div class="h-6 bg-slate-200 rounded-md"></div>
+            <div class="h-6 bg-slate-200 rounded-md"></div>
+            <div class="h-6 bg-slate-200 rounded-md"></div>
+            <div class="h-6 bg-slate-200 rounded-md opacity-60"></div>
+          </div>
+          <!-- Main -->
+          <div class="flex-1 p-3">
+            <div class="text-[9px] font-black text-slate-700 mb-2">Dashboard</div>
+            <!-- Stat cards -->
+            <div class="grid grid-cols-3 gap-2 mb-3">
+              <div class="bg-white border border-slate-200 rounded-lg p-2">
+                <p class="text-[7px] text-slate-400 uppercase font-semibold">Revenue</p>
+                <p class="text-[11px] font-black text-slate-800">₹47.8L</p>
+                <p class="text-[7px] text-teal-600 font-semibold">↑ 14%</p>
+              </div>
+              <div class="bg-white border border-slate-200 rounded-lg p-2">
+                <p class="text-[7px] text-slate-400 uppercase font-semibold">Invoices</p>
+                <p class="text-[11px] font-black text-slate-800">248</p>
+                <p class="text-[7px] text-orange-500 font-semibold">32 unpaid</p>
+              </div>
+              <div class="bg-white border border-slate-200 rounded-lg p-2">
+                <p class="text-[7px] text-slate-400 uppercase font-semibold">GST Collected</p>
+                <p class="text-[11px] font-black text-teal-700">₹8.6L</p>
+                <p class="text-[7px] text-slate-400 font-semibold">CGST+SGST</p>
+              </div>
+            </div>
+            <!-- Bar chart mini -->
+            <div class="bg-white border border-slate-200 rounded-lg p-2 mb-2">
+              <p class="text-[7px] text-slate-500 mb-1.5">Monthly Revenue</p>
+              <div class="flex items-end gap-1 h-10">
+                <div class="mockup-bar w-3" style="height:40%"></div>
+                <div class="mockup-bar w-3" style="height:60%"></div>
+                <div class="mockup-bar w-3" style="height:80%"></div>
+                <div class="mockup-bar w-3" style="height:55%"></div>
+                <div class="mockup-bar w-3" style="height:90%"></div>
+                <div class="mockup-bar w-3" style="height:70%"></div>
+                <div class="mockup-bar w-3 mockup-bar-light" style="height:65%"></div>
+                <div class="mockup-bar w-3 mockup-bar-light" style="height:50%"></div>
+              </div>
+            </div>
+            <!-- Invoice table mini -->
+            <div class="bg-white border border-slate-200 rounded-lg overflow-hidden">
+              <div class="bg-slate-50 px-2 py-1 flex gap-4">
+                <div class="text-[7px] text-slate-400 font-bold uppercase flex-1">Invoice</div>
+                <div class="text-[7px] text-slate-400 font-bold uppercase">Amount</div>
+                <div class="text-[7px] text-slate-400 font-bold uppercase">Status</div>
+              </div>
+              <div class="px-2 py-1 flex gap-4 items-center border-b border-slate-50">
+                <div class="text-[7px] text-teal-600 font-bold flex-1">#INV-2025-0048</div>
+                <div class="text-[7px] text-slate-700 font-semibold">₹1,24,000</div>
+                <div class="text-[7px] bg-green-100 text-green-700 font-bold rounded px-1">Paid</div>
+              </div>
+              <div class="px-2 py-1 flex gap-4 items-center">
+                <div class="text-[7px] text-teal-600 font-bold flex-1">#INV-2025-0047</div>
+                <div class="text-[7px] text-slate-700 font-semibold">₹84,200</div>
+                <div class="text-[7px] bg-red-100 text-red-700 font-bold rounded px-1">Unpaid</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="py-20 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-14">
+      <span class="section-tag">Features</span>
+      <h2 class="font-headline text-4xl font-bold text-slate-900 mt-4">Everything you need for GST billing</h2>
+      <p class="text-slate-500 mt-3 text-lg">No fluff. Just the tools Indian businesses actually use every day.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="feature-card">
+        <div class="w-11 h-11 rounded-xl bg-teal-50 flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined text-teal-700" style="font-size:22px">receipt_long</span>
+        </div>
+        <h3 class="font-headline font-bold text-slate-800 text-lg mb-2">GST-Compliant Invoices</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Create professional tax invoices with auto CGST/SGST/IGST split, HSN/SAC codes, e-Way bill, and transport details — instantly PDF-ready.</p>
+      </div>
+      <div class="feature-card">
+        <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined text-blue-600" style="font-size:22px">request_quote</span>
+        </div>
+        <h3 class="font-headline font-bold text-slate-800 text-lg mb-2">Quotations & Proforma</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Send professional quotations in one click and convert them to invoices without re-entering data. Track accepted, draft, and expired quotes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="w-11 h-11 rounded-xl bg-purple-50 flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined text-purple-600" style="font-size:22px">assignment_return</span>
+        </div>
+        <h3 class="font-headline font-bold text-slate-800 text-lg mb-2">Credit Notes</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Issue credit notes against invoices for returned goods, price corrections, or damaged items. Fully GST-compliant with tax adjustment.</p>
+      </div>
+      <div class="feature-card">
+        <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined text-amber-600" style="font-size:22px">bar_chart</span>
+        </div>
+        <h3 class="font-headline font-bold text-slate-800 text-lg mb-2">Revenue & GST Reports</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Monthly GST statements with CGST/SGST/IGST breakdown. See Net GST payable vs. Input Tax Credit at a glance. Export to CSV or PDF.</p>
+      </div>
+      <div class="feature-card">
+        <div class="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined text-green-600" style="font-size:22px">inventory_2</span>
+        </div>
+        <h3 class="font-headline font-bold text-slate-800 text-lg mb-2">Product & HSN Catalog</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Maintain a product catalog with HSN codes and GST rates pre-filled. Track stock levels, get low-stock alerts, add items to invoice in one click.</p>
+      </div>
+      <div class="feature-card">
+        <div class="w-11 h-11 rounded-xl bg-rose-50 flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined text-rose-600" style="font-size:22px">group</span>
+        </div>
+        <h3 class="font-headline font-bold text-slate-800 text-lg mb-2">Vendor Management</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Maintain a vendor directory with GSTIN, contact details, and billing addresses. Auto-fill Bill To/Ship To sections on every document.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works" class="py-20 px-6 bg-slate-50">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-14">
+      <span class="section-tag">How it Works</span>
+      <h2 class="font-headline text-4xl font-bold text-slate-900 mt-4">Up and running in minutes</h2>
+    </div>
+    <div class="space-y-8">
+      <div class="flex items-start gap-6 bg-white rounded-2xl p-6 border border-slate-200">
+        <div class="step-num">1</div>
+        <div>
+          <h3 class="font-headline font-bold text-slate-800 text-lg">Set up your company profile</h3>
+          <p class="text-slate-500 mt-1 text-sm leading-relaxed">Enter your GSTIN (we'll verify it instantly), business name, address, bank details, and upload your logo. Takes under 3 minutes.</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-6 bg-white rounded-2xl p-6 border border-slate-200">
+        <div class="step-num">2</div>
+        <div>
+          <h3 class="font-headline font-bold text-slate-800 text-lg">Add customers, vendors & products</h3>
+          <p class="text-slate-500 mt-1 text-sm leading-relaxed">Build your master data once. Customer GSTIN, state, HSN codes — all auto-filled every time you create a new invoice or quotation.</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-6 bg-white rounded-2xl p-6 border border-slate-200">
+        <div class="step-num">3</div>
+        <div>
+          <h3 class="font-headline font-bold text-slate-800 text-lg">Create & send invoices</h3>
+          <p class="text-slate-500 mt-1 text-sm leading-relaxed">Select customer, add products, CGST/SGST auto-calculates. Preview PDF, send via email, or download — all in under 60 seconds.</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-6 bg-white rounded-2xl p-6 border border-slate-200">
+        <div class="step-num">4</div>
+        <div>
+          <h3 class="font-headline font-bold text-slate-800 text-lg">Track payments & GST</h3>
+          <p class="text-slate-500 mt-1 text-sm leading-relaxed">Dashboard shows paid, unpaid, overdue. GST reports show monthly CGST/SGST/IGST breakdown and net payable — ready for your CA.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="py-20 px-6">
+  <div class="max-w-4xl mx-auto text-center bg-teal-800 rounded-3xl p-14">
+    <h2 class="font-headline text-4xl font-bold text-white leading-tight">Ready to simplify your GST billing?</h2>
+    <p class="text-teal-200 mt-3 text-lg">The simplest GST billing platform for Indian businesses</p>
+    <div class="flex flex-wrap gap-4 justify-center mt-8">
+      <a href="../signup_page/code.html" class="bg-white text-teal-800 font-bold text-base px-7 py-3.5 rounded-xl hover:bg-teal-50 transition-colors">Get Started for Free</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-slate-900 text-slate-400 py-12 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+      <div class="col-span-2 md:col-span-1">
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-8 h-8 bg-teal-700 rounded-lg flex items-center justify-center">
+            <span class="material-symbols-outlined text-white" style="font-size:17px">account_balance_wallet</span>
+          </div>
+          <span class="font-headline text-white font-bold">Finbooks</span>
+        </div>
+        <p class="text-sm text-slate-500 leading-relaxed">GST billing software built for Indian SMEs, traders, and chartered accountants.</p>
+      </div>
+      <div>
+        <p class="text-white font-semibold mb-3 text-sm">Product</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-white font-semibold mb-3 text-sm">Company</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-white font-semibold mb-3 text-sm">Legal</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">GST Compliance</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-slate-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-2">
+      <p class="text-xs text-slate-600">© 2025 Finbooks. All rights reserved. Made in India 🇮🇳</p>
+      <p class="text-xs text-slate-600">GSTIN compliant · Built for Indian SMEs</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

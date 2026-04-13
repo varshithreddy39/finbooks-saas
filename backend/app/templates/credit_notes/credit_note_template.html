@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Credit Note - {{ credit_note.credit_note_no }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 15px;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; font-size: 11px; margin: 0; padding: 80px 15px; background: #fff; }
+        .main-container { border: 0.5pt solid #000; width: 100%; box-sizing: border-box; margin: 0 auto; }
+        
+        table { width: 100% !important; border-collapse: collapse; table-layout: fixed; }
+        th, td { padding: 3px 6px; vertical-align: top; line-height: 1.1; border: 0.5pt solid #000; word-wrap: break-word; }
+        
+        .header-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 6px;
+            border-bottom: 0.5pt solid #000;
+            text-decoration: underline;
+            text-transform: uppercase;
+        }
+
+        /* Top Grid - Matches Reference */
+        .top-table td { height: 35px; }
+        .company-col { width: 45%; }
+        .mid-col { width: 27.5%; border-right: 0.5pt solid #000; }
+        .right-col { width: 27.5%; }
+
+        .item-table { border-top: 0.5pt solid #000; border-bottom: 0.5pt solid #000; margin-bottom: 0; }
+        .item-table th { background: #fff; font-size: 11px; font-weight: bold; border: 0.5pt solid #000; padding: 5px; }
+        .item-table td { border-left: 0.5pt solid #000; border-right: 0.5pt solid #000; border-top: none; border-bottom: none; height: 22px; font-size: 11px; padding: 2px 6px; }
+        .item-table tr.last-row td { border-bottom: 0.5pt solid #000; }
+        .item-table tr.total-row td { border-top: 0.5pt solid #000; border-bottom: 0.5pt solid #000; background: #fff; font-weight: bold; padding: 5px; }
+
+        /* GST Table Styles */
+        .gst-table th { font-size: 8px; text-align: center; padding: 3px; }
+        .gst-table td { text-align: center; font-size: 9px; padding: 2px; }
+
+        /* Footer */
+        .footer-table { width: 100%; border-top: 0.5pt solid #000; }
+        .footer-table td { border: none; padding: 0; }
+        .footer-left {
+            width: 50%;
+            border-right: 0.5pt solid #000;
+            padding: 8px;
+            vertical-align: top;
+        }
+        .footer-right {
+            width: 50%;
+            padding: 8px;
+            text-align: center;
+            vertical-align: top;
+        }
+        .signature-img {
+            max-height: 50px;
+            max-width: 160px;
+            margin: 4px 0;
+        }
+        .disclaimer {
+            text-align: center;
+            font-size: 8px;
+            padding: 6px;
+            font-style: italic;
+            border-top: 0.5pt solid #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header-title">Credit Note</div>
+        
+        <!-- Top Section -->
+        <table class="top-table">
+            <tr>
+                <td class="company-col" rowspan="2">
+                    <div class="font-bold" style="font-size: 13px; margin-bottom: 4px;">{{ company.company_name | upper }}</div>
+                    <div style="line-height: 1.4;">
+                        {{ company.address | replace('\n', '<br>') | safe }}<br>
+                        {{ company.primary_email }}<br>
+                        {{ company.phone }}<br>
+                        <span class="font-bold">GSTIN/UIN: {{ company.gstin }}</span>
+                    </div>
+                </td>
+                <td class="mid-col">
+                    <span class="font-bold">Credit Note No :</span> &nbsp; {{ credit_note.credit_note_no }}
+                </td>
+                <td class="right-col">
+                    <span class="font-bold">Dated :</span> &nbsp; {{ credit_note.date }}
+                </td>
+            </tr>
+            <tr>
+                <td class="mid-col">
+                    <span class="font-bold">Against Invoice No :</span> &nbsp; {{ credit_note.invoice_no or '' }}
+                </td>
+                <td class="right-col">
+                    <span class="font-bold">E waybill No :</span> &nbsp; {{ credit_note.eway_bill_no or '' }}
+                </td>
+            </tr>
+            <tr>
+                <td class="mid-col" colspan="2" style="border-right: none;">
+                    <span class="font-bold">Vehicle no :</span> &nbsp; {{ credit_note.vehicle_no or '' }}
+                </td>
+            </tr>
+            <tr>
+                <td class="company-col" rowspan="2">
+                    <div class="font-bold">Bill To,</div>
+                    <div class="font-bold" style="margin-top: 4px;">{{ credit_note.bill_to_name or credit_note.customers.name | upper }}</div>
+                    <div style="line-height: 1.3; margin-top: 2px;">
+                        {{ (credit_note.bill_to_address or credit_note.customers.address) | replace('\n', '<br>') | safe }}<br>
+                        <span class="font-bold">GSTIN/UIN: {{ credit_note.bill_to_gstin or credit_note.customers.gstin or '-' }}</span>
+                    </div>
+                </td>
+                <td class="mid-col">
+                    <span class="font-bold">Dispatched through</span><br>
+                    {{ credit_note.dispatched_through or '' }}
+                </td>
+                <td class="right-col">
+                    <span class="font-bold">Destination</span><br>
+                    {{ credit_note.destination or '' }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <span class="font-bold">Remark/Reason</span><br>
+                    {{ credit_note.reason or '' }}
+                </td>
+            </tr>
+        </table>
+
+        <!-- Items Table -->
+        <table class="item-table">
+            <thead>
+                <tr>
+                    <th style="width: 40px;">S.No</th>
+                    <th>Description of Goods</th>
+                    <th style="width: 70px;">HSN/SAC</th>
+                    <th style="width: 70px;">Quantity</th>
+                    <th style="width: 60px;">Unit</th>
+                    <th style="width: 80px;">Unit Price</th>
+                    <th style="width: 90px;">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr class="{% if loop.last %}last-row{% endif %}">
+                    <td class="text-center">{{ loop.index }}</td>
+                    <td class="font-bold">
+                        {{ item.products.name | upper }}
+                        {% if item.description %}
+                        <div style="font-weight: normal; font-size: 8px; margin-top: 2px;">{{ item.description }}</div>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">{{ item.products.hsn_sac }}</td>
+                    <td class="text-center">{{ "{:,.0f}".format(item.qty) }}</td>
+                    <td class="text-center">{{ item.products.unit }}</td>
+                    <td class="text-right">{{ "{:,.2f}".format(item.rate) }}</td>
+                    <td class="text-right font-bold">{{ "{:,.2f}".format(item.taxable_amount) }}</td>
+                </tr>
+                {% endfor %}
+                
+                <!-- Spacer rows to push total down if few items -->
+                {% if items|length < 12 %}
+                {% for i in range(12 - items|length) %}
+                <tr style="height: 22px;">
+                    <td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+
+                <tr class="total-row font-bold">
+                    <td colspan="3" class="text-center">Total</td>
+                    <td class="text-center">
+                        {% set total_qty = items | map(attribute='qty') | sum %}
+                        {{ "{:,.0f}".format(total_qty) }}
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right">{{ "{:,.2f}".format(credit_note.taxable_value) }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Amount In Words -->
+        <div style="padding: 10px; border-bottom: 1px solid #000;">
+            <div style="font-size: 9px;">Total Amount(in Words) :</div>
+            <div class="font-bold" style="font-size: 11px; margin-top: 2px;">{{ amount_in_words }}</div>
+        </div>
+
+        <!-- GST Table -->
+        <table class="gst-table">
+            <thead>
+                <tr>
+                    <th rowspan="2" style="width: 80px;">HSN/SAC</th>
+                    <th rowspan="2" style="width: 80px;">Taxable Value</th>
+                    {% if supply_type == 'Intra-state' %}
+                    <th colspan="2">CGST</th>
+                    <th colspan="2">SGST</th>
+                    {% else %}
+                    <th colspan="2">IGST</th>
+                    {% endif %}
+                    <th rowspan="2" style="width: 90px;">Total</th>
+                </tr>
+                <tr>
+                    {% if supply_type == 'Intra-state' %}
+                    <th style="width: 50px;">Rate</th><th>Amount</th>
+                    <th style="width: 50px;">Rate</th><th>Amount</th>
+                    {% else %}
+                    <th style="width: 70px;">Rate</th><th>Amount</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.products.hsn_sac }}</td>
+                    <td class="text-right">{{ "{:,.2f}".format(item.taxable_amount) }}</td>
+                    {% if supply_type == 'Intra-state' %}
+                    <td>{{ "{:,.2f}".format(item.gst_rate / 2) }}%</td>
+                    <td class="text-right">{{ "{:,.2f}".format(item.gst_amount / 2) }}</td>
+                    <td>{{ "{:,.2f}".format(item.gst_rate / 2) }}%</td>
+                    <td class="text-right">{{ "{:,.2f}".format(item.gst_amount / 2) }}</td>
+                    {% else %}
+                    <td>{{ "{:,.2f}".format(item.gst_rate) }}%</td>
+                    <td class="text-right">{{ "{:,.2f}".format(item.gst_amount) }}</td>
+                    {% endif %}
+                    <td class="text-right font-bold">{{ "{:,.2f}".format(item.taxable_amount + item.gst_amount) }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="font-bold">
+                    <td>Total</td>
+                    <td class="text-right">{{ "{:,.2f}".format(credit_note.taxable_value) }}</td>
+                    {% if supply_type == 'Intra-state' %}
+                    <td></td><td class="text-right">{{ "{:,.2f}".format(credit_note.total_gst / 2) }}</td>
+                    <td></td><td class="text-right">{{ "{:,.2f}".format(credit_note.total_gst / 2) }}</td>
+                    {% else %}
+                    <td></td><td class="text-right">{{ "{:,.2f}".format(credit_note.total_gst) }}</td>
+                    {% endif %}
+                    <td class="text-right">{{ "{:,.2f}".format(credit_note.total_amount) }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Footer Section -->
+        <table class="footer-table">
+            <tr>
+                <td class="footer-left">
+                    <div style="margin-bottom: 8px;">Tax Amount (in words) : <span class="font-bold">{{ total_tax_words }}</span></div>
+                    <div>Company`s GSTIN/UIN : <span class="font-bold">{{ company.gstin }}</span></div>
+                </td>
+                <td class="footer-right">
+                    <div style="font-size: 11px; margin-bottom: 5px;">For, {{ company.company_name | upper }}</div>
+                    
+                    {% if company.signature_url %}
+                    <img src="{{ company.signature_url }}" class="signature-img" alt="Signature">
+                    {% else %}
+                    <div style="height: 55px;"></div>
+                    {% endif %}
+                    
+                    <div style="font-size: 11px; font-weight: bold; margin-top: 5px;">
+                        Authorised Signatory
+                    </div>
+                    <div style="font-size: 10px; margin-top: 2px;">{{ credit_note.authorised_signatory or '' }}</div>
+                </td>
+            </tr>
+        </table>
+
+        <div class="disclaimer">
+            This is an electronically generated document
+        </div>
+    </div>
+</body>
+</html>

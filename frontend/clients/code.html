@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Clients – Finbooks</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+  body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+  .font-headline { font-family: 'Manrope', sans-serif; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; transition: all 0.15s; text-decoration: none; }
+  .nav-item:hover { background: #f0fdfa; color: #0d6e6e; }
+  .nav-item.active { background: #0d6e6e; color: white; }
+  .nav-item .material-symbols-outlined { font-size: 18px; }
+  .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; }
+  .form-label { display: block; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .form-input { width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 7px 12px; font-size: 13px; color: #1e293b; background: white; transition: all 0.15s; outline: none; }
+  .form-input:focus { border-color: #0d6e6e; box-shadow: 0 0 0 3px rgba(13,110,110,0.1); }
+  .form-input::placeholder { color: #cbd5e1; }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .toast-in { animation: slideIn 0.3s ease forwards; }
+</style>
+</head>
+<body class="min-h-screen">
+<aside class="fixed left-0 top-0 h-screen w-56 bg-white border-r border-slate-200 flex flex-col z-40">
+  <div class="flex items-center gap-2.5 px-4 py-4 border-b border-slate-100">
+    <div class="w-8 h-8 bg-teal-800 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-white" style="font-size:17px">account_balance_wallet</span></div>
+    <div><div class="text-sm font-bold text-slate-800 font-headline leading-none">Finbooks</div><div class="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5">GST Billing</div></div>
+  </div>
+  <nav class="flex-1 p-3 space-y-0.5 overflow-y-auto">
+    <a href="../dashboard/code.html" class="nav-item"><span class="material-symbols-outlined">grid_view</span>Dashboard</a>
+    <a href="../invoice_list/code.html" class="nav-item"><span class="material-symbols-outlined">description</span>Invoices</a>
+    <a href="../quotations/code.html" class="nav-item"><span class="material-symbols-outlined">request_quote</span>Quotations</a>
+    <a href="../credit_notes/code.html" class="nav-item"><span class="material-symbols-outlined">assignment_return</span>Credit Notes</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Master Data</div>
+    <a href="../clients/code.html" class="nav-item active"><span class="material-symbols-outlined">groups</span>Clients</a>
+    <a href="../vendors/code.html" class="nav-item"><span class="material-symbols-outlined">group</span>Vendors</a>
+    <a href="../products/code.html" class="nav-item"><span class="material-symbols-outlined">inventory_2</span>Products</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">More</div>
+    <a href="../reports_settings/code.html" class="nav-item"><span class="material-symbols-outlined">bar_chart</span>Reports</a>
+    <a href="../company_setup/code.html" class="nav-item"><span class="material-symbols-outlined">settings</span>Settings</a>
+  </nav>
+  <div class="p-3 border-t border-slate-100">
+    <a href="../landing/code.html" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-slate-500 text-sm font-semibold hover:bg-red-50 hover:text-red-600 transition-colors">
+      <span class="material-symbols-outlined" style="font-size:17px">logout</span>Log Out
+    </a>
+  </div>
+</aside>
+
+<!-- Toast -->
+<div id="toast" style="display:none" class="fixed top-5 right-5 z-50 w-72 bg-white rounded-2xl shadow-2xl border p-4 flex items-start gap-3">
+  <div id="toast-icon" class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 bg-teal-500">
+    <span class="material-symbols-outlined text-white" style="font-size:18px" id="toast-icon-sym">check</span>
+  </div>
+  <div class="flex-1">
+    <p class="text-sm font-bold text-slate-800" id="toast-title"></p>
+    <p class="text-xs text-slate-500 mt-0.5" id="toast-msg"></p>
+  </div>
+  <button onclick="hideToast()" class="text-slate-300 hover:text-slate-500"><span class="material-symbols-outlined" style="font-size:16px">close</span></button>
+</div>
+
+<main class="ml-56 min-h-screen">
+  <div class="bg-white border-b border-slate-200 px-6 py-3.5 flex items-center justify-between sticky top-0 z-30">
+    <div><h1 class="text-base font-bold text-slate-800 font-headline">Clients</h1><p class="text-xs text-slate-400 mt-0.5" id="client-count">Loading...</p></div>
+    <button onclick="exportClientsCSV()" class="bg-slate-100 text-slate-700 text-xs font-bold px-4 py-2 rounded-lg hover:bg-slate-200 transition-colors flex items-center gap-1.5">
+      <span class="material-symbols-outlined" style="font-size:16px">download</span>Export CSV
+    </button>
+  </div>
+  <div class="p-6">
+    <div class="grid grid-cols-3 gap-5">
+      <!-- Client List -->
+      <div class="col-span-2 card">
+        <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+          <p class="text-sm font-bold text-slate-700">Client Directory</p>
+          <input type="text" id="search-input" oninput="filterClients()" placeholder="Search client..." class="text-sm border border-slate-200 rounded-lg px-3 py-1.5 w-44 focus:outline-none focus:ring-2 focus:ring-teal-700"/>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead><tr class="bg-slate-50 border-b border-slate-100">
+              <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Client Name</th>
+              <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">GSTIN</th>
+              <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Phone</th>
+              <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">State</th>
+              <th class="px-4 py-3 text-center text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Action</th>
+            </tr></thead>
+            <tbody class="divide-y divide-slate-100" id="clients-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Add Client Form -->
+      <div class="card p-5">
+        <p class="text-sm font-bold text-slate-700 mb-4">Add New Client</p>
+        <form id="client-form" class="space-y-3">
+          <div><label class="form-label">Client Name</label><input class="form-input" id="name" type="text" placeholder="Company name" required/></div>
+          <div><label class="form-label">GSTIN</label><input class="form-input font-mono" id="gstin" type="text" placeholder="27XXXXX0000X1Z0"/></div>
+          <div><label class="form-label">Phone</label><input class="form-input" id="phone" type="tel" placeholder="+91 XXXXX XXXXX"/></div>
+          <div><label class="form-label">Email</label><input class="form-input" id="email" type="email" placeholder="client@email.com"/></div>
+          <div><label class="form-label">Address</label><textarea class="form-input" id="address" rows="2" placeholder="Full address"></textarea></div>
+          <div class="grid grid-cols-2 gap-2">
+            <div><label class="form-label">State</label><select class="form-input" id="state" onchange="autoStateCode()"></select></div>
+            <div><label class="form-label">State Code</label><input class="form-input" id="state_code" type="text" placeholder="27" readonly/></div>
+          </div>
+          <button type="submit" id="submit-btn" class="w-full bg-teal-800 text-white text-sm font-semibold py-2.5 rounded-lg hover:bg-teal-900 transition-colors flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined" style="font-size:16px">person_add</span>Add Client
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="../js/constants.js"></script>
+<script src="../js/api.js"></script>
+<script>
+const companyId = localStorage.getItem('company_id');
+let allClients = [];
+
+function showToast(type, title, msg) {
+  const t = document.getElementById('toast');
+  const icon = document.getElementById('toast-icon');
+  const sym = document.getElementById('toast-icon-sym');
+  document.getElementById('toast-title').innerText = title;
+  document.getElementById('toast-msg').innerText = msg;
+  icon.className = `w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${type === 'success' ? 'bg-teal-500' : 'bg-red-500'}`;
+  t.style.borderColor = type === 'success' ? '#99f6e4' : '#fecaca';
+  sym.innerText = type === 'success' ? 'check' : 'close';
+  t.style.display = 'flex';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(hideToast, 3500);
+}
+function hideToast() { document.getElementById('toast').style.display = 'none'; }
+
+function autoStateCode() {
+  const state = document.getElementById('state').value;
+  document.getElementById('state_code').value = PrecisionConstants.STATE_CODES[state] || '';
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!localStorage.getItem('token')) window.location = '../login_page/code.html';
+  if (!companyId) window.location = '../company_setup/code.html';
+  // Populate states
+  const sel = document.getElementById('state');
+  sel.innerHTML = '<option value="">Select State</option>' + PrecisionConstants.INDIAN_STATES.map(s => `<option value="${s}">${s}</option>`).join('');
+  loadClients();
+});
+
+async function loadClients() {
+  try {
+    allClients = await PrecisionApi.masters.getCustomers(companyId);
+    document.getElementById('client-count').innerText = `${allClients.length} client${allClients.length !== 1 ? 's' : ''}`;
+    renderClients(allClients);
+  } catch (err) { console.error(err); }
+}
+
+function renderClients(clients) {
+  const body = document.getElementById('clients-body');
+  if (!clients.length) {
+    body.innerHTML = `<tr><td colspan="5" class="px-4 py-10 text-center text-slate-400 text-sm">No clients yet. Add your first client.</td></tr>`;
+    return;
+  }
+  body.innerHTML = clients.map(v => `
+    <tr class="hover:bg-slate-50 transition-colors">
+      <td class="px-4 py-3 font-semibold text-slate-700">${v.name}<div class="text-[10px] text-slate-400 font-normal">${v.email || ''}</div></td>
+      <td class="px-4 py-3 text-xs font-mono text-slate-400">${v.gstin || 'N/A'}</td>
+      <td class="px-4 py-3 text-slate-500">${v.phone || 'N/A'}</td>
+      <td class="px-4 py-3 text-slate-500">${v.state || 'N/A'}</td>
+      <td class="px-4 py-3 text-center">
+        <button onclick="deleteClient('${v.id}', '${v.name.replace(/'/g,"\\'")}') " class="text-red-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg transition-colors" title="Delete">
+          <span class="material-symbols-outlined" style="font-size:16px">delete</span>
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterClients() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  renderClients(allClients.filter(c => c.name.toLowerCase().includes(q) || (c.gstin || '').toLowerCase().includes(q)));
+}
+
+function exportClientsCSV() {
+  if (!allClients.length) { showToast('error', 'No Data', 'No clients to export.'); return; }
+  const headers = ['Name', 'GSTIN', 'Phone', 'Email', 'Address', 'State', 'State Code'];
+  const rows = allClients.map(c => [
+    '"' + (c.name || '').replace(/"/g, '""') + '"',
+    '"' + (c.gstin || '') + '"',
+    '"' + (c.phone || '') + '"',
+    '"' + (c.email || '') + '"',
+    '"' + (c.address || '').replace(/\n/g, ' ') + '"',
+    '"' + (c.state || '') + '"',
+    '"' + (c.state_code || '') + '"'
+  ].join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'clients.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('success', 'Exported!', allClients.length + ' clients downloaded as CSV.');
+}
+
+async function deleteClient(id, name) {
+  if (!confirm(`Delete client "${name}"? This cannot be undone.`)) return;
+  try {
+    await PrecisionApi.masters.deleteCustomer(id, companyId);
+    showToast('success', 'Client Deleted', `"${name}" has been removed.`);
+    loadClients();
+  } catch (err) {
+    showToast('error', 'Delete Failed', err.message);
+  }
+}
+
+document.getElementById('client-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">hourglass_empty</span>Adding...';
+  btn.disabled = true;
+  try {
+    const data = {
+      name: document.getElementById('name').value,
+      gstin: document.getElementById('gstin').value,
+      phone: document.getElementById('phone').value,
+      email: document.getElementById('email').value,
+      address: document.getElementById('address').value,
+      state: document.getElementById('state').value,
+      state_code: document.getElementById('state_code').value
+    };
+    const added = await PrecisionApi.masters.addCustomer(data, companyId);
+    showToast('success', 'Client Added!', `"${added.name}" has been added to your directory.`);
+    document.getElementById('client-form').reset();
+    loadClients();
+  } catch (err) {
+    showToast('error', 'Error', err.message);
+  } finally {
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">person_add</span>Add Client';
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

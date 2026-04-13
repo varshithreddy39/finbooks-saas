@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Products – Finbooks</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+  body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+  .font-headline { font-family: 'Manrope', sans-serif; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; transition: all 0.15s; text-decoration: none; }
+  .nav-item:hover { background: #f0fdfa; color: #0d6e6e; }
+  .nav-item.active { background: #0d6e6e; color: white; }
+  .nav-item .material-symbols-outlined { font-size: 18px; }
+  .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; }
+  .form-label { display: block; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .form-input { width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 7px 12px; font-size: 13px; color: #1e293b; background: white; transition: all 0.15s; outline: none; }
+  .form-input:focus { border-color: #0d6e6e; box-shadow: 0 0 0 3px rgba(13,110,110,0.1); }
+  .form-input::placeholder { color: #cbd5e1; }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+  .toast-in { animation: slideIn 0.3s ease forwards; }
+  .toast-out { animation: slideOut 0.3s ease forwards; }
+</style>
+</head>
+<body class="min-h-screen">
+<aside class="fixed left-0 top-0 h-screen w-56 bg-white border-r border-slate-200 flex flex-col z-40">
+  <div class="flex items-center gap-2.5 px-4 py-4 border-b border-slate-100">
+    <div class="w-8 h-8 bg-teal-800 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-white" style="font-size:17px">account_balance_wallet</span></div>
+    <div><div class="text-sm font-bold text-slate-800 font-headline leading-none">Finbooks</div><div class="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5">GST Billing</div></div>
+  </div>
+  <nav class="flex-1 p-3 space-y-0.5 overflow-y-auto">
+    <a href="../dashboard/code.html" class="nav-item"><span class="material-symbols-outlined">grid_view</span>Dashboard</a>
+    <a href="../invoice_list/code.html" class="nav-item"><span class="material-symbols-outlined">description</span>Invoices</a>
+    <a href="../quotations/code.html" class="nav-item"><span class="material-symbols-outlined">request_quote</span>Quotations</a>
+    <a href="../credit_notes/code.html" class="nav-item"><span class="material-symbols-outlined">assignment_return</span>Credit Notes</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Master Data</div>
+    <a href="../clients/code.html" class="nav-item"><span class="material-symbols-outlined">groups</span>Clients</a>
+    <a href="../vendors/code.html" class="nav-item"><span class="material-symbols-outlined">group</span>Vendors</a>
+    <a href="../products/code.html" class="nav-item active"><span class="material-symbols-outlined">inventory_2</span>Products</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">More</div>
+    <a href="../reports_settings/code.html" class="nav-item"><span class="material-symbols-outlined">bar_chart</span>Reports</a>
+    <a href="../company_setup/code.html" class="nav-item"><span class="material-symbols-outlined">settings</span>Settings</a>
+  </nav>
+  <div class="p-3 border-t border-slate-100">
+    <a href="../landing/code.html" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-slate-500 text-sm font-semibold hover:bg-red-50 hover:text-red-600 transition-colors">
+      <span class="material-symbols-outlined" style="font-size:17px">logout</span>Log Out
+    </a>
+  </div>
+</aside>
+
+<!-- Toast -->
+<div id="toast" style="display:none" class="fixed top-5 right-5 z-50 w-72 bg-white rounded-2xl shadow-2xl border p-4 flex items-start gap-3">
+  <div id="toast-icon" class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0">
+    <span class="material-symbols-outlined text-white" style="font-size:18px" id="toast-icon-sym">check</span>
+  </div>
+  <div class="flex-1">
+    <p class="text-sm font-bold text-slate-800" id="toast-title"></p>
+    <p class="text-xs text-slate-500 mt-0.5" id="toast-msg"></p>
+  </div>
+  <button onclick="hideToast()" class="text-slate-300 hover:text-slate-500 flex-shrink-0"><span class="material-symbols-outlined" style="font-size:16px">close</span></button>
+</div>
+
+<main class="ml-56 min-h-screen">
+  <div class="bg-white border-b border-slate-200 px-6 py-3.5 flex items-center justify-between sticky top-0 z-30">
+    <div><h1 class="text-base font-bold text-slate-800 font-headline">Products & Services</h1><p class="text-xs text-slate-400 mt-0.5" id="product-count">Loading...</p></div>
+    <div class="flex items-center gap-2">
+      <button onclick="downloadTemplate()" class="bg-slate-100 text-slate-700 text-xs font-bold px-4 py-2 rounded-lg hover:bg-slate-200 transition-colors flex items-center gap-1.5">
+        <span class="material-symbols-outlined" style="font-size:16px">table_view</span>Download Template
+      </button>
+      <button onclick="document.getElementById('import-input').click()" class="bg-teal-800 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-teal-900 transition-colors flex items-center gap-1.5">
+        <span class="material-symbols-outlined" style="font-size:16px">upload_file</span>Import Catalog
+      </button>
+      <input type="file" id="import-input" class="hidden" accept=".csv"/>
+    </div>
+  </div>
+
+  <!-- Import Preview Modal -->
+  <div id="import-modal" style="display:none" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+        <div>
+          <h3 class="text-base font-bold text-slate-800">Import Preview</h3>
+          <p class="text-xs text-slate-400 mt-0.5" id="import-preview-count"></p>
+        </div>
+        <button onclick="closeImportModal()" class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined">close</span></button>
+      </div>
+      <div class="px-6 py-3 max-h-72 overflow-y-auto">
+        <table class="w-full text-xs">
+          <thead><tr class="bg-slate-50"><th class="px-3 py-2 text-left text-slate-500">Name</th><th class="px-3 py-2 text-left text-slate-500">HSN/SAC</th><th class="px-3 py-2 text-left text-slate-500">Price</th><th class="px-3 py-2 text-left text-slate-500">Unit</th><th class="px-3 py-2 text-left text-slate-500">GST%</th><th class="px-3 py-2 text-left text-slate-500">SKU</th></tr></thead>
+          <tbody id="import-preview-body" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+      <div id="import-error" class="hidden px-6 py-3 text-xs text-red-600 bg-red-50 border-t border-red-100"></div>
+      <div class="flex items-center justify-between px-6 py-4 border-t border-slate-100">
+        <p class="text-xs text-slate-400">Only valid rows will be imported.</p>
+        <div class="flex gap-2">
+          <button onclick="closeImportModal()" class="border border-slate-200 text-slate-600 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-slate-50">Cancel</button>
+          <button id="confirm-import-btn" onclick="confirmImport()" class="bg-teal-800 text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-teal-900 flex items-center gap-1.5">
+            <span class="material-symbols-outlined" style="font-size:16px">check</span>Import All
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="p-6">
+    <div class="grid grid-cols-3 gap-5">
+      <!-- Product List -->
+      <div class="col-span-2 card">
+        <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+          <p class="text-sm font-bold text-slate-700">Product / HSN Inventory</p>
+          <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search product..." class="text-sm border border-slate-200 rounded-lg px-3 py-1.5 w-44 focus:outline-none focus:ring-2 focus:ring-teal-700"/>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead><tr class="bg-slate-50 border-b border-slate-100">
+              <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Product Name</th>
+              <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">HSN/SAC</th>
+              <th class="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">GST %</th>
+              <th class="px-4 py-3 text-right text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Price (₹)</th>
+              <th class="px-4 py-3 text-center text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Unit</th>
+              <th class="px-4 py-3 text-center text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Action</th>
+            </tr></thead>
+            <tbody class="divide-y divide-slate-100" id="products-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Add Product Form -->
+      <div class="card p-5">
+        <p class="text-sm font-bold text-slate-700 mb-4">Add New Product</p>
+        <form id="product-form" class="space-y-3">
+          <div><label class="form-label">Product Name</label><input class="form-input" id="name" type="text" placeholder="e.g. Steel Rods Grade A" required/></div>
+          <div><label class="form-label">HSN/SAC Code</label><input class="form-input font-mono" id="hsn_sac" type="text" placeholder="7214 20 10" required/></div>
+          <div class="grid grid-cols-2 gap-2">
+            <div><label class="form-label">Unit Price (₹)</label><input class="form-input" id="sales_price" type="number" placeholder="0.00" min="0" step="0.01" required/></div>
+            <div><label class="form-label">Unit</label><select class="form-input" id="unit"><option>PCS</option><option>KGS</option><option>TON</option><option>NOS</option><option>MTR</option><option>LTR</option></select></div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div><label class="form-label">GST Rate</label><select class="form-input" id="default_gst_rate"><option value="18">18%</option><option value="12">12%</option><option value="5">5%</option><option value="28">28%</option><option value="0">0%</option></select></div>
+            <div><label class="form-label">Opening Stock</label><input class="form-input" id="opening_stock" type="number" placeholder="0" min="0"/></div>
+          </div>
+          <div><label class="form-label">SKU Code (Optional)</label><input class="form-input" id="sku" type="text" placeholder="IND-STL-001"/></div>
+          <button type="submit" id="submit-btn" class="w-full bg-teal-800 text-white text-sm font-semibold py-2.5 rounded-lg hover:bg-teal-900 transition-colors flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined" style="font-size:16px">add</span>Add Product
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="../js/api.js"></script>
+<script>
+const companyId = localStorage.getItem('company_id');
+let allProducts = [];
+
+function showToast(type, title, msg) {
+  const t = document.getElementById('toast');
+  const icon = document.getElementById('toast-icon');
+  const sym = document.getElementById('toast-icon-sym');
+  document.getElementById('toast-title').innerText = title;
+  document.getElementById('toast-msg').innerText = msg;
+  if (type === 'success') {
+    icon.className = 'w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 bg-teal-500';
+    t.style.borderColor = '#99f6e4';
+    sym.innerText = 'check';
+  } else {
+    icon.className = 'w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 bg-red-500';
+    t.style.borderColor = '#fecaca';
+    sym.innerText = 'close';
+  }
+  t.style.display = 'flex';
+  t.className = t.className.replace('toast-out','') + ' toast-in';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(hideToast, 3500);
+}
+
+function hideToast() {
+  const t = document.getElementById('toast');
+  t.style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!localStorage.getItem('token')) window.location = '../login_page/code.html';
+  if (!companyId) window.location = '../company_setup/code.html';
+  loadProducts();
+});
+
+async function loadProducts() {
+  try {
+    allProducts = await PrecisionApi.masters.getProducts(companyId);
+    document.getElementById('product-count').innerText = `${allProducts.length} product${allProducts.length !== 1 ? 's' : ''}`;
+    renderProducts(allProducts);
+  } catch (err) {
+    console.error('Error loading products:', err);
+  }
+}
+
+function renderProducts(products) {
+  const body = document.getElementById('products-body');
+  if (!products.length) {
+    body.innerHTML = `<tr><td colspan="6" class="px-4 py-10 text-center text-slate-400 text-sm">No products yet. Add your first product.</td></tr>`;
+    return;
+  }
+  body.innerHTML = products.map(p => `
+    <tr class="hover:bg-slate-50 transition-colors">
+      <td class="px-4 py-3 font-semibold text-slate-700">${p.name}<div class="text-[10px] text-slate-400 font-normal">SKU: ${p.sku || 'N/A'}</div></td>
+      <td class="px-4 py-3 font-mono text-xs text-slate-600">${p.hsn_sac}</td>
+      <td class="px-4 py-3 text-slate-600">${p.default_gst_rate}%</td>
+      <td class="px-4 py-3 text-right font-medium text-slate-700">₹${(p.sales_price || 0).toLocaleString('en-IN')}</td>
+      <td class="px-4 py-3 text-center text-xs text-slate-500 uppercase font-bold">${p.unit}</td>
+      <td class="px-4 py-3 text-center">
+        <button onclick="deleteProduct('${p.id}', '${p.name.replace(/'/g,"\\'")}') " class="text-red-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg transition-colors" title="Delete">
+          <span class="material-symbols-outlined" style="font-size:16px">delete</span>
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterProducts() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(q) || (p.hsn_sac || '').toLowerCase().includes(q)));
+}
+
+// ── Template Download ─────────────────────────────────────
+function downloadTemplate() {
+  const headers = 'name,hsn_sac,sales_price,unit,default_gst_rate,opening_stock,sku';
+  const sample = [
+    '"Steel Rods Grade A","7214 20 10",580,KGS,18,100,STL-001',
+    '"Hydraulic Fluid XP-50","2710 19 80",450,LTR,18,50,HYD-002',
+    '"Industrial Bearings","8482 10 10",1200,PCS,18,200,BRG-003'
+  ];
+  const csv = [headers, ...sample].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'product_catalog_template.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('success', 'Template Downloaded', 'Fill in your products and import the file.');
+}
+
+// ── CSV Import ────────────────────────────────────────────
+let parsedImportRows = [];
+
+document.getElementById('import-input').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const lines = ev.target.result.split('\n').map(l => l.trim()).filter(l => l);
+    if (lines.length < 2) { showToast('error', 'Invalid File', 'File is empty or has no data rows.'); return; }
+    const header = lines[0].toLowerCase().split(',').map(h => h.replace(/"/g,'').trim());
+    const required = ['name','hsn_sac','sales_price'];
+    const missing = required.filter(r => !header.includes(r));
+    if (missing.length) {
+      showToast('error', 'Missing Columns', 'Required: ' + missing.join(', '));
+      document.getElementById('import-input').value = '';
+      return;
+    }
+    parsedImportRows = [];
+    const errors = [];
+    lines.slice(1).forEach((line, i) => {
+      const vals = line.split(',').map(v => v.replace(/^"|"$/g,'').trim());
+      const row = {};
+      header.forEach((h, idx) => { row[h] = vals[idx] || ''; });
+      if (!row.name || !row.hsn_sac || !row.sales_price) { errors.push('Row ' + (i+2) + ': missing required fields'); return; }
+      parsedImportRows.push({
+        name: row.name,
+        hsn_sac: row.hsn_sac,
+        sales_price: parseFloat(row.sales_price) || 0,
+        unit: row.unit || 'PCS',
+        default_gst_rate: parseFloat(row.default_gst_rate) || 18,
+        opening_stock: parseFloat(row.opening_stock) || 0,
+        sku: row.sku || ''
+      });
+    });
+    const errEl = document.getElementById('import-error');
+    if (errors.length) { errEl.textContent = errors.join(' | '); errEl.classList.remove('hidden'); }
+    else { errEl.classList.add('hidden'); }
+    document.getElementById('import-preview-count').innerText = parsedImportRows.length + ' products ready to import';
+    document.getElementById('import-preview-body').innerHTML = parsedImportRows.map(r =>
+      '<tr class="hover:bg-slate-50"><td class="px-3 py-2 font-medium text-slate-700">' + r.name + '</td><td class="px-3 py-2 font-mono text-slate-500">' + r.hsn_sac + '</td><td class="px-3 py-2 text-slate-600">₹' + r.sales_price + '</td><td class="px-3 py-2 text-slate-500">' + r.unit + '</td><td class="px-3 py-2 text-slate-500">' + r.default_gst_rate + '%</td><td class="px-3 py-2 text-slate-400">' + (r.sku || '-') + '</td></tr>'
+    ).join('');
+    document.getElementById('import-modal').style.display = 'flex';
+    document.getElementById('import-input').value = '';
+  };
+  reader.readAsText(file);
+});
+
+function closeImportModal() {
+  document.getElementById('import-modal').style.display = 'none';
+  parsedImportRows = [];
+}
+
+async function confirmImport() {
+  if (!parsedImportRows.length) return;
+  const btn = document.getElementById('confirm-import-btn');
+  btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">hourglass_empty</span>Importing...';
+  btn.disabled = true;
+  let success = 0, failed = 0;
+  for (const row of parsedImportRows) {
+    try { await PrecisionApi.masters.addProduct(row, companyId); success++; }
+    catch (e) { failed++; }
+  }
+  closeImportModal();
+  loadProducts();
+  showToast('success', 'Import Complete', success + ' products imported' + (failed ? ', ' + failed + ' failed.' : '.'));
+  btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">check</span>Import All';
+  btn.disabled = false;
+}
+
+async function deleteProduct(id, name) {
+  if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+  try {
+    await PrecisionApi.masters.deleteProduct(id, companyId);
+    showToast('success', 'Product Deleted', `"${name}" has been removed.`);
+    loadProducts();
+  } catch (err) {
+    showToast('error', 'Delete Failed', err.message);
+  }
+}
+
+document.getElementById('product-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">hourglass_empty</span>Adding...';
+  btn.disabled = true;
+  try {
+    const data = {
+      name: document.getElementById('name').value,
+      hsn_sac: document.getElementById('hsn_sac').value,
+      sales_price: parseFloat(document.getElementById('sales_price').value),
+      unit: document.getElementById('unit').value,
+      default_gst_rate: parseFloat(document.getElementById('default_gst_rate').value),
+      opening_stock: parseFloat(document.getElementById('opening_stock').value || 0),
+      sku: document.getElementById('sku').value
+    };
+    const added = await PrecisionApi.masters.addProduct(data, companyId);
+    showToast('success', 'Product Added!', `"${added.name}" is now in your catalog.`);
+    document.getElementById('product-form').reset();
+    loadProducts();
+  } catch (err) {
+    showToast('error', 'Error', err.message);
+  } finally {
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">add</span>Add Product';
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

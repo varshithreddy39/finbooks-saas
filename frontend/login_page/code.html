@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Login – Finbooks</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .font-headline { font-family: 'Manrope', sans-serif; }
+</style>
+<script>
+  tailwind.config = { theme: { extend: { colors: { primary: '#0d6e6e' } } } }
+</script>
+</head>
+<body class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+<div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden flex min-h-[500px]">
+  <!-- Left Panel -->
+  <div class="w-2/5 bg-teal-800 p-10 flex flex-col justify-between hidden md:flex">
+    <div>
+      <div class="flex items-center gap-2.5 mb-10">
+        <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
+          <span class="material-symbols-outlined text-white text-xl">account_balance_wallet</span>
+        </div>
+        <span class="text-white font-bold text-lg font-headline">Finbooks</span>
+      </div>
+      <h1 class="text-white text-3xl font-bold font-headline leading-tight mb-3">GST Billing<br/>Made Simple</h1>
+      <p class="text-teal-200 text-sm leading-relaxed">Create invoices, track GST, manage quotations and credit notes — all in one place.</p>
+    </div>
+    <div class="space-y-3">
+      <div class="flex items-center gap-2.5 text-teal-200 text-sm">
+        <span class="material-symbols-outlined text-base text-teal-400">check_circle</span>GST-compliant invoices
+      </div>
+      <div class="flex items-center gap-2.5 text-teal-200 text-sm">
+        <span class="material-symbols-outlined text-base text-teal-400">check_circle</span>CGST / SGST / IGST auto-calculation
+      </div>
+      <div class="flex items-center gap-2.5 text-teal-200 text-sm">
+        <span class="material-symbols-outlined text-base text-teal-400">check_circle</span>Revenue & GST analytics
+      </div>
+    </div>
+  </div>
+  <!-- Right: Form -->
+  <div class="flex-1 p-10 flex flex-col justify-center">
+    <div class="max-w-sm w-full mx-auto">
+      <h2 class="text-2xl font-bold text-slate-800 font-headline mb-1">Welcome back</h2>
+      <p class="text-slate-500 text-sm mb-8">Sign in to your account</p>
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Email Address</label>
+          <input type="email" id="email" placeholder="you@company.com" required class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-700 focus:border-transparent transition"/>
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider">Password</label>
+            <a href="#" id="forgot-password-link" class="text-teal-700 text-xs font-semibold hover:underline">Forgot password?</a>
+          </div>
+          <input type="password" id="password" placeholder="••••••••" required class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-700 focus:border-transparent transition"/>
+        </div>
+        <button type="submit" id="submit-btn" class="w-full bg-teal-800 hover:bg-teal-900 text-white font-semibold rounded-lg py-3 text-sm transition-colors">Sign In</button>
+      </form>
+      <p class="text-center text-sm text-slate-500 mt-6">Don't have an account? <a href="../signup_page/code.html" class="text-teal-700 font-semibold hover:underline">Sign up</a></p>
+    </div>
+  </div>
+</div>
+<script src="../js/api.js"></script>
+<script>
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const originalText = btn.innerText;
+  btn.innerText = 'Signing in...';
+  btn.disabled = true;
+
+  try {
+    const data = {
+      email: document.getElementById('email').value,
+      password: document.getElementById('password').value
+    };
+    
+    const res = await PrecisionApi.auth.login(data);
+    
+    // Store token and company_id
+    localStorage.setItem('token', res.access_token);
+    localStorage.setItem('refresh_token', res.refresh_token || '');
+    if (res.company_id) {
+      localStorage.setItem('company_id', res.company_id);
+      window.location = '../dashboard/code.html';
+    } else {
+      // New user or no company setup yet
+      window.location = '../company_setup/code.html';
+    }
+  } catch (err) {
+    alert('Error: ' + err.message);
+    btn.innerText = originalText;
+    btn.disabled = false;
+  }
+});
+document.getElementById('forgot-password-link').addEventListener('click', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('email').value;
+  if (!email) {
+    alert("Please enter your email address first.");
+    return;
+  }
+  
+  try {
+    const res = await PrecisionApi.auth.resetPassword(email);
+    alert(res.message || "Password reset email sent! Please check your inbox.");
+  } catch (err) {
+    alert("Error: " + err.message);
+  }
+});
+</script>
+</body>
+</html>

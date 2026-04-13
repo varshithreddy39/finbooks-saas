@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Credit Notes – Finbooks</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+  body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+  .font-headline { font-family: 'Manrope', sans-serif; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; transition: all 0.15s; text-decoration: none; }
+  .nav-item:hover { background: #f0fdfa; color: #0d6e6e; }
+  .nav-item.active { background: #0d6e6e; color: white; }
+  .nav-item .material-symbols-outlined { font-size: 18px; }
+  .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; }
+  .badge-issued { background:#dbeafe; color:#1e40af; }
+  .badge-pending { background:#fef3c7; color:#92400e; }
+  .tab-btn { padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; cursor: pointer; border: none; background: none; transition: all 0.15s; }
+  .tab-btn.active { background: #0d6e6e; color: white; }
+</style>
+</head>
+<body class="min-h-screen">
+<aside class="fixed left-0 top-0 h-screen w-56 bg-white border-r border-slate-200 flex flex-col z-40">
+  <div class="flex items-center gap-2.5 px-4 py-4 border-b border-slate-100">
+    <div class="w-8 h-8 bg-teal-800 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-white" style="font-size:17px">account_balance_wallet</span></div>
+    <div><div class="text-sm font-bold text-slate-800 font-headline leading-none">Finbooks</div><div class="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5">GST Billing</div></div>
+  </div>
+  <nav class="flex-1 p-3 space-y-0.5 overflow-y-auto">
+    <a href="../dashboard/code.html" class="nav-item"><span class="material-symbols-outlined">grid_view</span>Dashboard</a>
+    <a href="../invoice_list/code.html" class="nav-item"><span class="material-symbols-outlined">description</span>Invoices</a>
+    <a href="../quotations/code.html" class="nav-item"><span class="material-symbols-outlined">request_quote</span>Quotations</a>
+    <a href="../credit_notes/code.html" class="nav-item active"><span class="material-symbols-outlined">assignment_return</span>Credit Notes</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Master Data</div>
+    <a href="../clients/code.html" class="nav-item"><span class="material-symbols-outlined">groups</span>Clients</a>
+    <a href="../vendors/code.html" class="nav-item"><span class="material-symbols-outlined">group</span>Vendors</a>
+    <a href="../products/code.html" class="nav-item"><span class="material-symbols-outlined">inventory_2</span>Products</a>
+    <div class="pt-2 pb-1 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">More</div>
+    <a href="../reports_settings/code.html" class="nav-item"><span class="material-symbols-outlined">bar_chart</span>Reports</a>
+    <a href="../company_setup/code.html" class="nav-item"><span class="material-symbols-outlined">settings</span>Settings</a>
+  </nav>
+  <div class="p-3 border-t border-slate-100">
+    <a href="../landing/code.html" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-slate-500 text-sm font-semibold hover:bg-red-50 hover:text-red-600 transition-colors">
+      <span class="material-symbols-outlined" style="font-size:17px">logout</span>Log Out
+    </a>
+  </div>
+</aside>
+<main class="ml-56 min-h-screen">
+  <div class="bg-white border-b border-slate-200 px-6 py-3.5 flex items-center justify-between sticky top-0 z-30">
+    <div><h1 class="text-base font-bold text-slate-800 font-headline">Credit Notes</h1><p id="total-count" class="text-xs text-slate-400 mt-0.5">Loading...</p></div>
+    <button onclick="window.location='../create_credit_note/code.html'" class="flex items-center gap-1.5 bg-teal-800 hover:bg-teal-900 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+      <span class="material-symbols-outlined" style="font-size:16px">add</span>New Credit Note
+    </button>
+  </div>
+  <div class="p-6">
+    <div class="card">
+      <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
+          <button class="tab-btn active" onclick="setTab(this)">All</button>
+          <button class="tab-btn" onclick="setTab(this)">Issued</button>
+          <button class="tab-btn" onclick="setTab(this)">Pending</button>
+        </div>
+        <input type="text" placeholder="Search credit note..." class="text-sm border border-slate-200 rounded-lg px-3 py-1.5 w-48 focus:outline-none focus:ring-2 focus:ring-teal-700"/>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-100">
+              <th class="px-5 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Credit Note No.</th>
+              <th class="px-5 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Date</th>
+              <th class="px-5 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Against Invoice</th>
+              <th class="px-5 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Customer</th>
+              <th class="px-5 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Reason</th>
+              <th class="px-5 py-3 text-right text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Amount</th>
+              <th class="px-5 py-3 text-center text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Status</th>
+              <th class="px-5 py-3"></th>
+            </tr>
+          </thead>
+          <tbody id="cn-table-body" class="divide-y divide-slate-100">
+          </tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="../js/api.js?v=1.0.1"></script>
+<script>
+  let creditNotes = [];
+  let currentTab = 'All';
+  let currentCompanyId = null;
+
+  async function loadCreditNotes() {
+    try {
+      const company = await PrecisionApi.company.getMine();
+      currentCompanyId = company.id;
+      creditNotes = await PrecisionApi.creditNotes.list(company.id);
+      renderCreditNotes();
+    } catch (err) {
+      console.error('Error loading credit notes:', err);
+    }
+  }
+
+  function renderCreditNotes() {
+    const tbody = document.getElementById('cn-table-body');
+    const filtered = creditNotes.filter(cn => 
+      currentTab === 'All' || cn.status === currentTab
+    );
+
+    tbody.innerHTML = filtered.map(cn => `
+      <tr class="hover:bg-slate-50 transition-colors">
+        <td class="px-5 py-3.5 text-teal-700 font-semibold cursor-pointer hover:underline" onclick="viewCN('${cn.id}')">#${cn.credit_note_no}</td>
+        <td class="px-5 py-3.5 text-slate-500">${new Date(cn.date).toLocaleDateString()}</td>
+        <td class="px-5 py-3.5 text-slate-500 font-medium">${cn.invoice_no || '-'}</td>
+        <td class="px-5 py-3.5 font-medium text-slate-700">${(cn.customers && cn.customers.name) ? cn.customers.name : 'Unknown'}</td>
+        <td class="px-5 py-3.5 text-slate-500 text-xs">${cn.reason || '-'}</td>
+        <td class="px-5 py-3.5 text-right font-semibold text-slate-800">₹${cn.total_amount.toLocaleString()}</td>
+        <td class="px-5 py-3.5 text-center">
+            <span class="badge-${cn.status?.toLowerCase() || 'issued'} px-2.5 py-0.5 rounded-full text-[11px] font-semibold">${cn.status || 'Issued'}</span>
+        </td>
+        <td class="px-5 py-3.5 text-right flex items-center gap-3 justify-end">
+          <a href="../create_credit_note/code.html" onclick="setEditContext('credit_note','${cn.id}','view')" class="text-xs text-slate-500 font-semibold hover:underline">View</a>
+          <a href="../create_credit_note/code.html" onclick="setEditContext('credit_note','${cn.id}','edit')" class="text-xs text-teal-700 font-semibold hover:underline">Edit</a>
+          <a href="${PrecisionApi.creditNotes.getPdf(cn.id, currentCompanyId)}" target="_blank" class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined" style="font-size:18px">download</span></a>
+          <button onclick="deleteCN('${cn.id}')" class="text-red-400 hover:text-red-600"><span class="material-symbols-outlined" style="font-size:18px">delete</span></button>
+        </td>
+      </tr>
+    `).join('');
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" class="px-5 py-10 text-center text-slate-400">No credit notes found</td></tr>';
+    }
+    
+    document.getElementById('total-count').textContent = `${creditNotes.length} total records`;
+  }
+
+  function setEditContext(type, id, mode) {
+    localStorage.setItem('edit_type', type);
+    localStorage.setItem('edit_id', id);
+    localStorage.setItem('edit_mode', mode);
+  }
+
+  function viewCN(id) {
+    window.location.href = `../create_credit_note/code.html?id=${id}&mode=view&_t=${Date.now()}`;
+  }
+
+  async function deleteCN(id) {
+    if (confirm('Are you sure you want to delete this credit note?')) {
+      try {
+        await PrecisionApi.creditNotes.delete(id, currentCompanyId);
+        await loadCreditNotes();
+      } catch (err) {
+        alert('Failed to delete: ' + err.message);
+      }
+    }
+  }
+
+  function setTab(el) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    currentTab = el.textContent;
+    renderCreditNotes();
+  }
+
+  loadCreditNotes();
+</script>
+</body>
+</html>

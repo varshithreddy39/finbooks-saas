@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "name": "finbooks",
+  "builds": [
+    {
+      "src": "frontend/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    { "src": "/dashboard", "dest": "/frontend/dashboard/code.html" },
+    { "src": "/login", "dest": "/frontend/login_page/code.html" },
+    { "src": "/signup", "dest": "/frontend/signup_page/code.html" },
+    { "src": "/invoices", "dest": "/frontend/invoice_list/code.html" },
+    { "src": "/invoices/new", "dest": "/frontend/create_invoice/code.html" },
+    { "src": "/quotations", "dest": "/frontend/quotations/code.html" },
+    { "src": "/quotations/new", "dest": "/frontend/create_quotation/code.html" },
+    { "src": "/credit-notes", "dest": "/frontend/credit_notes/code.html" },
+    { "src": "/credit-notes/new", "dest": "/frontend/create_credit_note/code.html" },
+    { "src": "/clients", "dest": "/frontend/clients/code.html" },
+    { "src": "/vendors", "dest": "/frontend/vendors/code.html" },
+    { "src": "/products", "dest": "/frontend/products/code.html" },
+    { "src": "/reports", "dest": "/frontend/reports_settings/code.html" },
+    { "src": "/settings", "dest": "/frontend/company_setup/code.html" },
+    { "src": "/", "dest": "/frontend/landing/code.html" },
+    { "src": "/(.*)", "dest": "/frontend/$1" }
+  ]
+}
