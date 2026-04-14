@@ -178,7 +178,7 @@ function toggleSidebar() {
         <td class="px-5 py-3.5 text-right flex items-center gap-3 justify-end">
           <a href="../create_credit_note/code.html" onclick="setEditContext('credit_note','${cn.id}','view')" class="text-xs text-slate-500 font-semibold hover:underline">View</a>
           <a href="../create_credit_note/code.html" onclick="setEditContext('credit_note','${cn.id}','edit')" class="text-xs text-teal-700 font-semibold hover:underline">Edit</a>
-          <a href="${PrecisionApi.creditNotes.getPdf(cn.id, currentCompanyId)}" target="_blank" class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined" style="font-size:18px">download</span></a>
+          <button onclick="downloadCNPdf('${cn.id}','${cn.credit_note_no}')" class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined" style="font-size:18px">download</span></button>
           <button onclick="deleteCN('${cn.id}')" class="text-red-400 hover:text-red-600"><span class="material-symbols-outlined" style="font-size:18px">delete</span></button>
         </td>
       </tr>
@@ -199,6 +199,19 @@ function toggleSidebar() {
 
   function viewCN(id) {
     window.location.href = `../create_credit_note/code.html?id=${id}&mode=view&_t=${Date.now()}`;
+  }
+
+  async function downloadCNPdf(id, cnNo) {
+    try {
+      const url = PrecisionApi.creditNotes.getPdf(id, currentCompanyId);
+      const response = await fetch(url, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+      if (!response.ok) throw new Error('PDF generation failed');
+      const blob = await response.blob();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `CreditNote_${cnNo}.pdf`;
+      a.click();
+    } catch(err) { alert('Download failed: ' + err.message); }
   }
 
   async function deleteCN(id) {

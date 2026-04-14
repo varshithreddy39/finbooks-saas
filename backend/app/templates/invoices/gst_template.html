@@ -285,14 +285,14 @@ body {
                     <td colspan="3" style="text-align:right; font-weight:bold; padding-right:20px;">Total</td>
                     <td class="c">{{ total_qty }}</td>
                     <td></td><td></td>
-                    <td>₹ {{ "{:,.2f}".format(invoice.taxable_value) }}</td>
+                    <td>Rs. {{ "{:,.2f}".format(invoice.taxable_value) }}</td>
                     {% if is_intra_state %}
-                    <td></td><td>₹ {{ "{:,.2f}".format(invoice.total_gst / 2) }}</td>
-                    <td></td><td>₹ {{ "{:,.2f}".format(invoice.total_gst / 2) }}</td>
+                    <td></td><td>Rs. {{ "{:,.2f}".format(invoice.total_gst / 2) }}</td>
+                    <td></td><td>Rs. {{ "{:,.2f}".format(invoice.total_gst / 2) }}</td>
                     {% else %}
-                    <td></td><td>₹ {{ "{:,.2f}".format(invoice.total_gst) }}</td>
+                    <td></td><td>Rs. {{ "{:,.2f}".format(invoice.total_gst) }}</td>
                     {% endif %}
-                    <td>₹ {{ "{:,.2f}".format(invoice.total_amount) }}</td>
+                    <td>Rs. {{ "{:,.2f}".format(invoice.total_amount) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -307,18 +307,18 @@ body {
     </td>
     <td colspan="2" style="padding:0;">
         <table class="ttbl">
-            <tr><td class="lbl">Total Amount Before Tax</td><td class="sep2">:</td><td class="amt">₹ {{ "{:,.2f}".format(invoice.taxable_value) }}</td></tr>
+            <tr><td class="lbl">Total Amount Before Tax</td><td class="sep2">:</td><td class="amt">Rs. {{ "{:,.2f}".format(invoice.taxable_value) }}</td></tr>
             {% if is_intra_state %}
-            <tr><td class="lbl">Add : CGST</td><td class="sep2">:</td><td class="amt">₹ {{ "{:,.2f}".format(invoice.total_gst / 2) }}</td></tr>
-            <tr><td class="lbl">Add : SGST</td><td class="sep2">:</td><td class="amt">₹ {{ "{:,.2f}".format(invoice.total_gst / 2) }}</td></tr>
+            <tr><td class="lbl">Add : CGST</td><td class="sep2">:</td><td class="amt">Rs. {{ "{:,.2f}".format(invoice.total_gst / 2) }}</td></tr>
+            <tr><td class="lbl">Add : SGST</td><td class="sep2">:</td><td class="amt">Rs. {{ "{:,.2f}".format(invoice.total_gst / 2) }}</td></tr>
             {% else %}
-            <tr><td class="lbl">Add : IGST</td><td class="sep2">:</td><td class="amt">₹ {{ "{:,.2f}".format(invoice.total_gst) }}</td></tr>
+            <tr><td class="lbl">Add : IGST</td><td class="sep2">:</td><td class="amt">Rs. {{ "{:,.2f}".format(invoice.total_gst) }}</td></tr>
             {% endif %}
-            <tr><td class="lbl">Tax Amount : GST</td><td class="sep2">:</td><td class="amt">₹ {{ "{:,.2f}".format(invoice.total_gst) }}</td></tr>
+            <tr><td class="lbl">Tax Amount : GST</td><td class="sep2">:</td><td class="amt">Rs. {{ "{:,.2f}".format(invoice.total_gst) }}</td></tr>
             {% if round_off != 0 %}
             <tr><td class="lbl">Round Off</td><td class="sep2">:</td><td class="amt">{{ "{:+.2f}".format(round_off) }}</td></tr>
             {% endif %}
-            <tr class="grand"><td class="lbl">Amount With Tax</td><td class="sep2">:</td><td class="amt">₹ {{ "{:,.0f}".format(rounded_amount) }}</td></tr>
+            <tr class="grand"><td class="lbl">Amount With Tax</td><td class="sep2">:</td><td class="amt">Rs. {{ "{:,.0f}".format(rounded_amount) }}</td></tr>
         </table>
     </td>
 </tr>
