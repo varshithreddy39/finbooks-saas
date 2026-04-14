@@ -104,19 +104,8 @@ async def generate_quotation_pdf(quotation_id: str, company_id: str, db=Depends(
             supply_type=supply_type
         )
 
-        # Use Playwright (Chromium) for pixel-perfect PDF rendering
-        from playwright.async_api import async_playwright
-        async with async_playwright() as p:
-            browser = await p.chromium.launch()
-            page = await browser.new_page()
-            await page.set_content(html_content, wait_until="networkidle")
-            pdf_bytes = await page.pdf(
-                format="A4",
-                print_background=True,
-                margin={"top": "0", "bottom": "0", "left": "0", "right": "0"}
-            )
-            await browser.close()
-
+        from weasyprint import HTML
+        pdf_bytes = HTML(string=html_content).write_pdf()
         return Response(content=pdf_bytes, media_type="application/pdf")
         
     except HTTPException:
