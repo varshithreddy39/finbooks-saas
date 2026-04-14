@@ -11,8 +11,15 @@ body {
     font-size: 9.5px;
     color: #1a1a1a;
     background: #fff;
+    height: 277mm;
 }
-.page { border: 1.5px solid #1e3a8a; width: 100%; }
+.page {
+    border: 1.5px solid #1e3a8a;
+    width: 100%;
+    height: 277mm;
+    display: flex;
+    flex-direction: column;
+}
 
 /* HEADER */
 .hdr { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 2px solid #1e3a8a; background: #f8fafc; }
@@ -40,7 +47,8 @@ body {
 .state-code { border: 0.5px solid #1e3a8a; padding: 0 4px; margin-left: 4px; font-weight: 700; font-size: 8px; color: #1e3a8a; }
 
 /* ITEMS TABLE */
-.items-table { width: 100%; border-collapse: collapse; }
+.items-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.items-table { width: 100%; border-collapse: collapse; height: 100%; }
 .items-table th {
     background: #1e3a8a; color: #fff;
     border: 1px solid #1e3a8a;
@@ -51,7 +59,8 @@ body {
     padding: 5px 4px; font-size: 9px; vertical-align: middle;
 }
 .items-table tr:nth-child(even) td { background: #f8fafc; }
-.items-table tr.filler td { height: 18px; background: #fff; }
+.items-table tr.filler td { background: #fff; }
+.items-table tr.filler-grow td { background: #fff; }
 .items-table tr.total-row td {
     background: #eff6ff; font-weight: 700; font-size: 9.5px;
     border-top: 1.5px solid #1e3a8a; border-bottom: 1.5px solid #1e3a8a;
@@ -134,6 +143,7 @@ body {
   </div>
 
   <!-- ITEMS TABLE -->
+  <div class="items-wrap">
   <table class="items-table">
     <thead>
       <tr>
@@ -189,6 +199,12 @@ body {
         <td></td>
       </tr>
       {% endfor %}
+      <!-- One expanding row to fill remaining space -->
+      <tr class="filler-grow" style="height:100%;">
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+        {% if supply_type == 'Intra-state' %}<td></td><td></td><td></td><td></td>{% else %}<td></td><td></td>{% endif %}
+        <td></td>
+      </tr>
       <tr class="total-row">
         <td colspan="6" class="tr" style="padding-right:10px;">TOTALS</td>
         <td class="tr">{{ "{:,.2f}".format(quotation.taxable_value) }}</td>
@@ -202,6 +218,7 @@ body {
       </tr>
     </tbody>
   </table>
+  </div>
 
   <!-- BOTTOM: AMOUNT IN WORDS + SUMMARY -->
   <div class="bottom">
