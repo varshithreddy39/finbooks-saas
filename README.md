@@ -1,5 +1,10 @@
 # Finbooks — GST Billing SaaS
 
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi)
+![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?logo=supabase)
+![Vercel](https://img.shields.io/badge/Deployed-Vercel-black?logo=vercel)
+
 > A full-stack Indian GST billing platform for SMEs, traders, and chartered accountants.
 
 **Live Links**
@@ -250,3 +255,11 @@ FOR SELECT TO anon, authenticated USING (bucket_id = 'signatures');
 ---
 
 Made with ❤️ in India 🇮🇳
+
+---
+
+## License
+
+This project is licensed under the **MIT License** — see the [LICENSE](./LICENSE) file for details.
+
+© 2025 Varshith Reddy. All rights reserved.
