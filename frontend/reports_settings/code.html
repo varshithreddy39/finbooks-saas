@@ -40,6 +40,7 @@
     main > div:last-child, main > .p-6, main > .p-5 { padding-bottom: 80px !important; }
   }
 </style>
+<link rel="stylesheet" href="../js/ui.css"/>
 </head>
 <body class="min-h-screen">
 
@@ -107,16 +108,16 @@ function toggleSidebar() {
       <p class="text-xs text-slate-400 mt-0.5" id="report-subtitle">Loading...</p>
     </div>
     <!-- Professional Filter Bar -->
-    <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+    <div class="flex flex-wrap items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
       <span class="material-symbols-outlined text-slate-400" style="font-size:16px">calendar_month</span>
       <select id="filter-month" onchange="applyFilter()" class="text-sm bg-transparent text-slate-700 font-medium focus:outline-none cursor-pointer"></select>
       <select id="filter-year" onchange="applyFilter()" class="text-sm bg-transparent text-slate-700 font-medium focus:outline-none cursor-pointer border-l border-slate-200 pl-2"></select>
-      <div class="w-px h-4 bg-slate-200 mx-1"></div>
+      <div class="w-px h-4 bg-slate-200 mx-1 hidden md:block"></div>
       <button onclick="exportGSTR1()" class="flex items-center gap-1 text-teal-700 text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-50 hover:bg-teal-100 transition-colors border border-teal-200">
         <span class="material-symbols-outlined" style="font-size:14px">download</span>GSTR-1
       </button>
       <button onclick="exportAllInvoicesCSV()" class="flex items-center gap-1 text-slate-600 text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200">
-        <span class="material-symbols-outlined" style="font-size:14px">table_view</span>Export CSV
+        <span class="material-symbols-outlined" style="font-size:14px">table_view</span>CSV
       </button>
     </div>
   </div>

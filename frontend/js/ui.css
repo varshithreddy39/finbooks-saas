@@ -1,0 +1,129 @@
+/* Finbooks Global UI Enhancements */
+
+/* Page fade-in */
+@keyframes fb-fadein {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+main > .p-6, main > .p-5 {
+  animation: fb-fadein 0.28s ease forwards;
+}
+
+/* Smooth sidebar transitions */
+aside {
+  transition: transform 0.25s cubic-bezier(0.4,0,0.2,1),
+              box-shadow 0.25s ease;
+}
+
+/* Nav item hover — smooth slide */
+.nav-item {
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease !important;
+}
+.nav-item:hover {
+  transform: translateX(2px);
+}
+.nav-item.active {
+  transform: none;
+}
+
+/* Card hover lift */
+.card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+.card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+/* Stat cards */
+.stat-card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease !important;
+}
+.stat-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important;
+}
+
+/* Quick action cards */
+.quick-card {
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1) !important;
+}
+.quick-card:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+}
+
+/* Buttons */
+button, .btn-primary, .btn-outline, a[class*="bg-teal"] {
+  transition: all 0.15s ease !important;
+}
+button:active {
+  transform: scale(0.97);
+}
+
+/* Table rows */
+tbody tr {
+  transition: background 0.12s ease;
+}
+
+/* Form inputs focus */
+.form-input, input[class*="form-input"], select[class*="form-input"], textarea[class*="form-input"] {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+/* Mobile bottom nav items */
+.mob-nav-item {
+  transition: color 0.15s ease, transform 0.1s ease;
+}
+.mob-nav-item:active {
+  transform: scale(0.92);
+}
+
+/* Mobile sidebar overlay */
+.mobile-overlay {
+  transition: opacity 0.25s ease;
+}
+
+/* Toast / notification slide-in */
+@keyframes fb-slidein {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+#toast, #success-toast {
+  animation: fb-slidein 0.25s ease forwards;
+}
+
+/* Loading skeleton pulse */
+@keyframes fb-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.skeleton {
+  background: #e2e8f0;
+  border-radius: 6px;
+  animation: fb-pulse 1.5s ease infinite;
+}
+
+/* Smooth page transitions for links */
+a {
+  transition: color 0.12s ease, opacity 0.12s ease;
+}
+
+/* Badge pop */
+.badge {
+  transition: transform 0.15s ease;
+}
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid #0d6e6e;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
