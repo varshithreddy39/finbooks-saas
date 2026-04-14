@@ -57,17 +57,23 @@ async def upload_logo(company_id: str, file: UploadFile = File(...), db = Depend
     ext = os.path.splitext(file.filename)[1] or ".png"
     filename = f"{company_id}_{uuid.uuid4()}{ext}"
     contents = await file.read()
+    content_type = file.content_type or "image/png"
 
     try:
-        # Upload to Supabase Storage bucket "logos"
-        db.storage.from_("logos").upload(filename, contents, {"content-type": file.content_type or "image/png"})
+        db.storage.from_("logos").upload(
+            path=filename,
+            file=contents,
+            file_options={"content-type": content_type}
+        )
         logo_url = get_public_url("logos", filename)
-    except Exception:
+    except Exception as e:
+        print(f"Supabase storage upload failed: {e}")
         # Fallback: save locally (for local dev)
         os.makedirs("uploads", exist_ok=True)
         with open(f"uploads/{filename}", "wb") as f:
             f.write(contents)
-        logo_url = f"/uploads/{filename}"
+        base_url = os.environ.get("RENDER_EXTERNAL_URL", "http://localhost:8001")
+        logo_url = f"{base_url}/uploads/{filename}"
 
     db.table("company_profile").update({"logo_url": logo_url}).eq("id", company_id).execute()
     return {"logo_url": logo_url}
@@ -77,15 +83,22 @@ async def upload_signature(company_id: str, file: UploadFile = File(...), db = D
     ext = os.path.splitext(file.filename)[1] or ".png"
     filename = f"sig_{company_id}_{uuid.uuid4()}{ext}"
     contents = await file.read()
+    content_type = file.content_type or "image/png"
 
     try:
-        db.storage.from_("signatures").upload(filename, contents, {"content-type": file.content_type or "image/png"})
+        db.storage.from_("signatures").upload(
+            path=filename,
+            file=contents,
+            file_options={"content-type": content_type}
+        )
         signature_url = get_public_url("signatures", filename)
-    except Exception:
+    except Exception as e:
+        print(f"Supabase storage upload failed: {e}")
         os.makedirs("uploads", exist_ok=True)
         with open(f"uploads/{filename}", "wb") as f:
             f.write(contents)
-        signature_url = f"/uploads/{filename}"
+        base_url = os.environ.get("RENDER_EXTERNAL_URL", "http://localhost:8001")
+        signature_url = f"{base_url}/uploads/{filename}"
 
     db.table("company_profile").update({"signature_url": signature_url}).eq("id", company_id).execute()
     return {"signature_url": signature_url}
