@@ -36,13 +36,13 @@ html, body {
 .text-right { text-align: right; }
 .text-center { text-align: center; }
 .bottom-section { display: flex; border-top: 1.5px solid #000; }
-.bottom-left { width: 58%; padding: 8px 12px; border-right: 1.5px solid #000; }
+.bottom-left { width: 58%; padding: 7px 12px; border-right: 1.5px solid #000; }
 .bottom-right { width: 42%; }
 .summary-table { width: 100%; border-collapse: collapse; }
 .summary-table td { padding: 3px 8px; border: 1px solid #000; font-size: 9.5px; }
 .grand-total-row { background: #1a1a1a; color: #fff; font-weight: 900; }
 .grand-total-row td { font-size: 10.5px; }
-.footer { border-top: 1.5px solid #000; display: flex; justify-content: flex-end; align-items: center; padding: 8px 12px; min-height: 58px; }
+.footer { border-top: 1.5px solid #000; display: flex; justify-content: flex-end; align-items: center; padding: 6px 12px; min-height: 50px; }
 .sign-block { text-align: center; }
 .sign-block img { max-height: 34px; max-width: 110px; display: block; margin: 0 auto 3px; }
 .sign-for { font-size: 9.5px; font-weight: 900; margin-bottom: 3px; }
@@ -141,9 +141,9 @@ html, body {
                 <td class="text-right" style="font-weight:700;">{{ "{:,.2f}".format(item.taxable_amount + item.gst_amount) }}</td>
             </tr>
             {% endfor %}
-            {% set filler = [8 - items|length, 2]|max %}
+            {% set filler = [5 - items|length, 0]|max %}
             {% for i in range(filler) %}
-            <tr style="height:18px;">
+            <tr style="height:16px;">
                 <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                 {% if supply_type == 'Intra-state' %}<td></td><td></td><td></td><td></td>{% else %}<td></td><td></td>{% endif %}
                 <td></td>
