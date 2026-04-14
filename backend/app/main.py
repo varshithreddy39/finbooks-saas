@@ -30,6 +30,10 @@ app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 async def root():
     return {"message": "Finbooks API is running"}
 
+@app.head("/")
+async def root_head():
+    return {}
+
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(company.router, prefix="/api/company", tags=["Company"])
 app.include_router(invoice.router, prefix="/api/invoices", tags=["Invoicing"])
