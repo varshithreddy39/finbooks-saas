@@ -7,7 +7,25 @@
       "use": "@vercel/static"
     }
   ],
+  "headers": [
+    {
+      "source": "/frontend/sw.js",
+      "headers": [
+        { "key": "Service-Worker-Allowed", "value": "/" },
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    },
+    {
+      "source": "/frontend/manifest.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/manifest+json" }
+      ]
+    }
+  ],
   "routes": [
+    { "src": "/sw.js", "dest": "/frontend/sw.js" },
+    { "src": "/manifest.json", "dest": "/frontend/manifest.json" },
+    { "src": "/icons/(.*)", "dest": "/frontend/icons/$1" },
     { "src": "/dashboard", "dest": "/frontend/dashboard/code.html" },
     { "src": "/login", "dest": "/frontend/login_page/code.html" },
     { "src": "/signup", "dest": "/frontend/signup_page/code.html" },

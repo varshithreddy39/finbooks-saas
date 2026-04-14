@@ -8,6 +8,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 <style>body { font-family: 'Inter', sans-serif; } .font-headline { font-family: 'Manrope', sans-serif; }</style>
+<link rel="manifest" href="../manifest.json"/>
+<meta name="theme-color" content="#0d6e6e"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Finbooks"/>
+<link rel="apple-touch-icon" href="../icons/icon-192.png"/>
 </head>
 <body class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
 <div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden flex min-h-[540px]">
@@ -92,6 +98,13 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
     btn.disabled = false;
   }
 });
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('../sw.js').catch(() => {});
+  });
+}
 </script>
 </body>
 </html>

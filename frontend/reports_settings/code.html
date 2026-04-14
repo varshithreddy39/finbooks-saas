@@ -41,6 +41,12 @@
   }
 </style>
 <link rel="stylesheet" href="../js/ui.css"/>
+<link rel="manifest" href="../manifest.json"/>
+<meta name="theme-color" content="#0d6e6e"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Finbooks"/>
+<link rel="apple-touch-icon" href="../icons/icon-192.png"/>
 </head>
 <body class="min-h-screen">
 
@@ -578,6 +584,13 @@ function exportAllInvoicesCSV() {
   a.download = `Invoices_${month}_${year}.csv`;
   a.click();
   URL.revokeObjectURL(url);
+}
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('../sw.js').catch(() => {});
+  });
 }
 </script>
 </body>

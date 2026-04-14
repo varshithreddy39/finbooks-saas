@@ -27,6 +27,12 @@
   .float-anim { animation: float 4s ease-in-out infinite; }
   .step-num { width: 36px; height: 36px; border-radius: 50%; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; }
 </style>
+<link rel="manifest" href="../manifest.json"/>
+<meta name="theme-color" content="#0d6e6e"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Finbooks"/>
+<link rel="apple-touch-icon" href="../icons/icon-192.png"/>
 </head>
 <body>
 
@@ -307,5 +313,12 @@
   </div>
 </footer>
 
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('../sw.js').catch(() => {});
+  });
+}
+</script>
 </body>
 </html>
