@@ -150,17 +150,34 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
       password: document.getElementById('password').value
     });
 
+    console.log('[Finbooks] Login response:', { 
+      has_token: !!res.access_token, 
+      has_company: !!res.company_id,
+      company_id: res.company_id 
+    });
+
     localStorage.setItem('token', res.access_token);
     localStorage.setItem('refresh_token', res.refresh_token || '');
+
+    // Verify token was actually written before redirecting
+    if (!localStorage.getItem('token')) {
+      showBanner('login-banner', 'Browser storage blocked. Please check your browser settings (disable private/incognito mode or allow cookies).', 'error');
+      btn.disabled = false;
+      btn.innerHTML = 'Sign In';
+      return;
+    }
+
+    if (res.company_id) {
+      localStorage.setItem('company_id', res.company_id);
+    }
 
     showToast('Signed in successfully!', 'success', 2000);
 
     setTimeout(() => {
       if (res.company_id) {
-        localStorage.setItem('company_id', res.company_id);
-        window.location = '../dashboard/code.html';
+        window.location.href = '../dashboard/code.html';
       } else {
-        window.location = '../company_setup/code.html';
+        window.location.href = '../company_setup/code.html';
       }
     }, 600);
 
