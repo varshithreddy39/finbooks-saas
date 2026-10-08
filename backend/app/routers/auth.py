@@ -96,12 +96,22 @@ async def refresh_token(body: dict, db = Depends(get_supabase)):
 @router.post("/reset-password")
 async def reset_password(req: PasswordReset, db = Depends(get_supabase)):
     try:
-        # Note: If no SMTP configure, Supabase requires configured redirect URL 
-        # For simplicity in local testing, we just fire the reset API
-        res = db.auth.reset_password_email(req.email)
-        return {"message": "Password reset email sent (check Supabase logs if local)"}
+        db.auth.reset_password_email(req.email)
+        # Always return the same message — don't leak whether the email exists
+        return {"message": "If an account exists for this email, a password reset link has been sent."}
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        err = str(e).lower()
+        if "rate limit" in err or "email rate" in err:
+            raise HTTPException(
+                status_code=429,
+                detail="Too many password reset requests. Please wait a few minutes and try again."
+            )
+        if "smtp" in err or "email" in err:
+            raise HTTPException(
+                status_code=503,
+                detail="Password reset emails are temporarily unavailable. Please try again later."
+            )
+        raise HTTPException(status_code=400, detail="Could not send reset email. Please try again.")
 
 @router.delete("/delete-account")
 async def delete_account(user = Depends(get_current_user), db = Depends(get_supabase)):
